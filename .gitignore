@@ -1,2 +1,8 @@
 *.exe
 *.mp4
+dist/*
+node_modules/*
+assets/*
+*.ico
+*.jpg
+*.png
