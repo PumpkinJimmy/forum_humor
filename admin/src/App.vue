@@ -38,19 +38,20 @@
     </v-app-bar>
 
     <v-main>
-      <HelloWorld/>
+      <users-view/>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld';
+
+import UsersView from './components/UsersView.vue';
 
 export default {
   name: 'App',
 
   components: {
-    HelloWorld,
+    UsersView
   },
 
   data: () => ({

@@ -9,3 +9,7 @@ assets/*
 *.jpg
 *.png
 *.svg
+
+# for Flask & Python
+*.pyc
+*.dat
