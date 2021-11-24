@@ -13,3 +13,6 @@ assets/*
 # for Flask & Python
 *.pyc
 *.dat
+
+# for django
+db.sqlite3
