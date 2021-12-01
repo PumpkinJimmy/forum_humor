@@ -25,7 +25,10 @@ export default {
                 'http://127.0.0.1:5000/api/tag',
                 this.new_data)
                 .then(response=>{
-                    alert(JSON.stringify(response.data))
+                    alert(JSON.stringify(response.data));
+                    this.$router.push({
+                        path: '/tag'
+                    });
                 })
         }
     }

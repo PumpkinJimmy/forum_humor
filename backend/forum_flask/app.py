@@ -36,7 +36,7 @@ def forum_user_access():
     else:
         return '<p>Method not support yes</p>'
 
-@app.route('/api/tag', methods=['GET', 'POST', 'PUT', 'DELETE'])
+@app.route('/api/tag', methods=['GET', 'POST', 'PUT'])
 def tag_access():
     attrs = ('tname', 'hot_value')
     keys = ('tname', )
@@ -130,8 +130,33 @@ def tag_access():
             }
         finally:
             conn.close()
-        return '<p>PUT not support yet</p>'
-    elif request.method == 'DELETE':
-        return '<p>DELETE not support yet</p>'
+        # return '<p>PUT not support yet</p>'
+    
     else:
         return '<p>Method not support yet</p>'
+
+@app.route('/api/tag/<tname>', methods=['DELETE'])
+def tag_delete(tname):
+    if request.method == 'DELETE':
+        try:
+            print(type(tname))
+            conn = psycopg2.connect(**settings['database'])
+            curs = conn.cursor()
+            curs.execute(
+                'delete from tag where tname=%s',
+                (tname, ))
+        except psycopg2.Error as e:
+            print(e)
+            return {
+                'status': 'fail'
+            }
+        else:
+            curs.execute('commit')
+            print('Commit')
+            return {
+                'status': 'ok',
+                'data': 'This is a delete'
+            }
+        finally:
+            conn.close()
+    # return '<p>DELETE not support yet</p>'
