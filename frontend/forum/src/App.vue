@@ -1,23 +1,19 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <tag-view></tag-view>
-    <router-link to="/tag">Tags</router-link>
+    <div class="links">
+      <router-link to="/tag">Tags</router-link>
+      <router-link to="/forum_user">ForumUsers</router-link>
+    </div>
+    
     <router-view></router-view>
   </div>
 </template>
 
 <script>
-// import HelloWorld from './components/HelloWorld.vue'
-import TagView from './components/Tag.vue'
+
 export default {
   name: 'App',
-  components:{
-    TagView
-  }
-  // components: {
-  //   HelloWorld
-  // }
+
 }
 </script>
 
@@ -29,5 +25,12 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+div.links {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  flex-direction: row;
+  border: 2px black solid;
 }
 </style>

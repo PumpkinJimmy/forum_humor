@@ -1,9 +1,10 @@
 // import HelloWorld from './components/HelloWorld'
 import TagView from './components/Tag.vue'
+import ForumUserView from './components/ForumUser.vue'
 
-export default {
-    router: [
-        {path: '/tag', component: TagView},
-        {path: '/', redirect: '/tag'}
-    ]
-}
+const routes = [
+    {path: '/tag', component: TagView},
+    {path: '/forum_user', component: ForumUserView},
+]
+
+export default routes

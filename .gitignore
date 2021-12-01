@@ -1,5 +1,7 @@
+# common
 *.exe
 *.mp4
+scratch
 
 # JS
 node_modules/

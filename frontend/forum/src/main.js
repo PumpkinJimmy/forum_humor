@@ -1,10 +1,14 @@
 import Vue from 'vue'
 import App from './App.vue'
 import VueRouter from 'vue-router'
-import routerConfig from './router.config.js'
-// // Vue.config.productionTip = false
+import routes from './router.config.js'
+
+Vue.config.productionTip = false
 Vue.use(VueRouter)
-const router = new VueRouter(routerConfig)
+const router = new VueRouter({
+  mode: 'history',
+  routes
+})
 
 new Vue({
   render: h => h(App),
