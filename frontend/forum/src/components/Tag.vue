@@ -7,6 +7,7 @@
                 <td>{{tag.hot_value}}</td>
             </tr>
         </table>
+        <router-link to='/new_tag'><button>New Tag</button></router-link>
     </div>
 </template>
 
@@ -55,6 +56,8 @@ export default {
         axios
             .get('http://127.0.0.1:5000/api/tag')
             .then(response => (this.tags = response.data.data))
+    },
+    methods: {
     }
 }
 </script>
