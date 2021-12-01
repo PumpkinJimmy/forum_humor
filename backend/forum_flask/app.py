@@ -39,31 +39,36 @@ def forum_user_access():
 @app.route('/api/tag', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def tag_access():
     attrs = ('tname', 'hot_value')
+    keys = ('tname', )
     # Query
     if request.method == 'GET':
+        '''
+        {
+            status: 'ok'
+            rows: [row]
+            key: [attr...]
+        }
+        '''
         conn = psycopg2.connect(**settings['database'])
         curs = conn.cursor()
         curs.execute('select * from tag')
         raw_data = curs.fetchall()
-        data = list(map(lambda t: dict(zip(attrs, t)), raw_data))
+        rows = list(map(lambda t: dict(zip(attrs, t)), raw_data))
         return {
             'status': 'ok',
-            'data': data
+            'rows': rows,
+            'key': ['tname']
         }
     # Insert
     elif request.method == 'POST':
-        
-        new_tag = json.loads(request.data)
-        t = []
-        for attr in attrs:
-            t.append(new_tag.get(attr, None))
+        new_tag = request.get_json()
         try:
-            print(f"Try insert tuple {t}")
+            print(f"Try insert tuple {new_tag}")
             conn = psycopg2.connect(**settings['database'])
             curs = conn.cursor()
             curs.execute(
-                'insert into tag values (%s, %s)',
-                t)
+                'insert into tag values (%(tname)s, %(hot_value)s)',
+                new_tag)
         except psycopg2.Error as e:
             print(e)
             return {
@@ -80,9 +85,52 @@ def tag_access():
                 'status': 'ok',
                 'data': 'This is a post'
             }
+        finally:
+            conn.close()
     # Update
     elif request.method == 'PUT':
-        return '<p>Update not support yet</p>'
+        '''
+        req:{
+            old_key: {data subset},
+            new_value: {data}
+        }
+        '''
+        data = request.get_json()
+        new_value = data['new_value']
+        old_key = data['old_key']
+        vars = []
+        for attr in attrs:
+            vars.append(new_value.get(attr, None))
+        ks = []
+        for attr in keys:
+            ks.append(old_key.get(attr, None))
+        try:
+            print(f"Try update from {old_key} to {new_value}")
+            conn = psycopg2.connect(**settings['database'])
+            curs = conn.cursor()
+            curs.execute(
+                '''
+                update tag
+                set tname=%s,
+                hot_value=%s
+                where tname=%s
+                ''',
+                vars + ks)
+        except psycopg2.Error as e:
+            print(e)
+            return {
+                'status': 'fail'
+            }
+        else:
+            curs.execute('commit')
+            print('Commit')
+            return {
+                'status': 'ok',
+                'data': 'This is a put'
+            }
+        finally:
+            conn.close()
+        return '<p>PUT not support yet</p>'
     elif request.method == 'DELETE':
         return '<p>DELETE not support yet</p>'
     else:

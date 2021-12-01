@@ -2,7 +2,7 @@
     <div>
         <h3>Tags</h3>
         <table>
-            <tr v-for="tag in tags" v-bind:key="tag[0]">
+            <tr v-for="(tag, idx) in rows" v-bind:key="idx" v-on:click="selectRow(idx)">
                 <td>{{tag.tname}}</td>
                 <td>{{tag.hot_value}}</td>
             </tr>
@@ -23,6 +23,9 @@
         border: 1px black solid;
         min-width: 100px;
     }
+    tr:hover {
+        background-color: yellow;
+    }
 </style>
 
 <script>
@@ -31,7 +34,7 @@ export default {
     name: 'TagView',
     data(){
         return {
-            tags: [
+            rows: [
                 {
                     tname: 'A',
                     hot_value: 10
@@ -48,16 +51,32 @@ export default {
                     tname: 'Yuan Shen',
                     hot_value: 10000
                 }
-            ]
-
+            ],
+            key: []
         }
     },
     mounted(){
         axios
             .get('http://127.0.0.1:5000/api/tag')
-            .then(response => (this.tags = response.data.data))
+            .then(response => {
+                this.rows = response.data.rows;
+                this.key = response.data.key;
+            })
     },
     methods: {
+        selectRow(idx){
+            var k = {}
+            for (var a of this.key){
+                k[a] = this.rows[idx][a]
+            }
+            // alert(JSON.stringify(k));
+            this.$router.push({
+                path: '/tag_update', 
+                query: {
+                    key: k
+                }
+            })
+        }
     }
 }
 </script>
