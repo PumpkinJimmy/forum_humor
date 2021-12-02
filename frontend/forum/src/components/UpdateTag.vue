@@ -1,8 +1,8 @@
 <template>
     <div>
-        <div>Current Editing Tag: {{ form_data.old_key.tname }}</div>
-        <div>Tag Name: <input type="text"  v-model="form_data.new_value.tname"/></div>
-        <div>Hot Value: <input type="text" v-model="form_data.new_value.hot_value"/></div>
+        <div>Current Editing Tag: {{ pk }}</div>
+        <div>Tag Name: <input type="text"  v-model="new_value.tname"/></div>
+        <div>Hot Value: <input type="text" v-model="new_value.hot_value"/></div>
         <button v-on:click="submit">提交更改</button>
         <button v-on:click="del">删除对象</button>
     </div>
@@ -16,15 +16,13 @@ export default {
     name: 'UpdateTagForm',
     data() {
         return {
-            form_data:{
-                old_key: {},
-                new_value: {}
-            }
+            pk: null,
+            new_value: {}
         }
     },
     methods: {
         submit(){
-            axios.put('http://127.0.0.1:5000/api/tag', this.form_data)
+            axios.put('http://127.0.0.1:5000/api/tag/' + this.pk, this.new_value)
             .then((response)=>{
                 alert(JSON.stringify(response.data))
                 this.$router.push({
@@ -33,7 +31,7 @@ export default {
             })
         },
         del(){
-            axios.delete('http://127.0.0.1:5000/api/tag/' + this.form_data.old_key.tname)
+            axios.delete('http://127.0.0.1:5000/api/tag/' + this.pk)
             .then((response)=>{
                 alert(JSON.stringify(response.data))
                 this.$router.push({
@@ -43,7 +41,12 @@ export default {
         }
     },
     mounted(){
-        this.form_data.old_key = this.$route.query.key;
+        // FIXME: use VUEX cache instead of repeated query
+        this.pk = this.$route.query.pk
+        axios.get('http://127.0.0.1:5000/api/tag/' + this.pk)
+            .then(response=>{
+                this.new_value = response.data.row
+            })
         
     }
 }

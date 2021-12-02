@@ -1,4 +1,5 @@
 from flask import Flask, request
+import flask
 from flask_cors import CORS
 import json
 import psycopg2
@@ -36,107 +37,126 @@ def forum_user_access():
     else:
         return '<p>Method not support yes</p>'
 
-@app.route('/api/tag', methods=['GET', 'POST', 'PUT'])
-def tag_access():
+@app.route('/api/tag', methods=['GET'])
+def get_tags():
+    '''
+    {
+        status: String
+        rows: Array
+        pks: Array
+    }
+    '''
+
     attrs = ('tname', 'hot_value')
     keys = ('tname', )
-    # Query
-    if request.method == 'GET':
-        '''
-        {
-            status: 'ok'
-            rows: [row]
-            key: [attr...]
-        }
-        '''
+    
+    conn = psycopg2.connect(**settings['database'])
+    curs = conn.cursor()
+    curs.execute('select * from tag')
+    raw_data = curs.fetchall()
+    rows = list(map(lambda t: dict(zip(attrs, t)), raw_data))
+    # uris = list(map(lambda t: flask.url_for('get_tag', tname=t[0], _external=True), raw_data))
+    pks = list(map(lambda t: t[0], raw_data))
+    return {
+        'status': 'ok',
+        'rows': rows,
+        'pks': pks
+        # 'uris': uris
+    }
+
+@app.route('/api/tag/<tname>', methods=['GET'])
+def get_tag(tname):
+    '''
+    {
+        status: String,
+        row: Object,
+        pk: String
+    }
+    '''
+    attrs = ('tname', 'hot_value')
+    keys = ('tname', )
+    
+    conn = psycopg2.connect(**settings['database'])
+    curs = conn.cursor()
+    curs.execute('select * from tag where tname=%s', [tname])
+    raw_data = curs.fetchall()
+    row = dict(zip(attrs, raw_data[0]))
+    pk = raw_data[0][0]
+    # uri = flask.url_for('get_tag', tname=raw_data[0][0])
+    return {
+        'status': 'ok',
+        'row': row,
+        'pk': pk
+        # 'uri': uri
+    }
+
+@app.route('/api/tag', methods=['POST'])
+def create_tag():
+    '''
+    req: Object
+    '''
+    new_tag = request.get_json()
+    try:
+        print(f"Try insert tuple {new_tag}")
         conn = psycopg2.connect(**settings['database'])
         curs = conn.cursor()
-        curs.execute('select * from tag')
-        raw_data = curs.fetchall()
-        rows = list(map(lambda t: dict(zip(attrs, t)), raw_data))
+        curs.execute(
+            'insert into tag values (%(tname)s, %(hot_value)s)',
+            new_tag)
+    except psycopg2.Error as e:
+        print(e)
+        return {
+            'status': 'fail'
+        }
+    else:
+        curs.execute('commit')
+        print('Commit')
         return {
             'status': 'ok',
-            'rows': rows,
-            'key': ['tname']
+            'data': 'This is a post'
         }
-    # Insert
-    elif request.method == 'POST':
-        new_tag = request.get_json()
-        try:
-            print(f"Try insert tuple {new_tag}")
-            conn = psycopg2.connect(**settings['database'])
-            curs = conn.cursor()
-            curs.execute(
-                'insert into tag values (%(tname)s, %(hot_value)s)',
-                new_tag)
-        except psycopg2.Error as e:
-            print(e)
-            return {
-                'status': 'fail'
-            }
-        else:
-            # curs.execute('select * from tag')
-            # print(curs.fetchall())
-            # curs.execute('rollback')
-            # print('Rollback')
-            curs.execute('commit')
-            print('Commit')
-            return {
-                'status': 'ok',
-                'data': 'This is a post'
-            }
-        finally:
-            conn.close()
-    # Update
-    elif request.method == 'PUT':
-        '''
-        req:{
-            old_key: {data subset},
-            new_value: {data}
+    finally:
+        conn.close()
+
+@app.route('/api/tag/<tname>', methods=['PUT'])
+def update_tag(tname):
+    '''
+    req: Object
+    '''
+    attrs = ('tname', 'hot_value')
+    new_value = request.get_json()
+    vars = []
+    for attr in attrs:
+        vars.append(new_value.get(attr, None))
+    try:
+        print(f"Try update {tname} to {new_value}")
+        conn = psycopg2.connect(**settings['database'])
+        curs = conn.cursor()
+        curs.execute(
+            '''
+            update tag
+            set tname=%s,
+            hot_value=%s
+            where tname=%s
+            ''',
+            vars + [tname])
+    except psycopg2.Error as e:
+        print(e)
+        return {
+            'status': 'fail'
         }
-        '''
-        data = request.get_json()
-        new_value = data['new_value']
-        old_key = data['old_key']
-        vars = []
-        for attr in attrs:
-            vars.append(new_value.get(attr, None))
-        ks = []
-        for attr in keys:
-            ks.append(old_key.get(attr, None))
-        try:
-            print(f"Try update from {old_key} to {new_value}")
-            conn = psycopg2.connect(**settings['database'])
-            curs = conn.cursor()
-            curs.execute(
-                '''
-                update tag
-                set tname=%s,
-                hot_value=%s
-                where tname=%s
-                ''',
-                vars + ks)
-        except psycopg2.Error as e:
-            print(e)
-            return {
-                'status': 'fail'
-            }
-        else:
-            curs.execute('commit')
-            print('Commit')
-            return {
-                'status': 'ok',
-                'data': 'This is a put'
-            }
-        finally:
-            conn.close()
-        # return '<p>PUT not support yet</p>'
-    
     else:
-        return '<p>Method not support yet</p>'
+        curs.execute('commit')
+        print('Commit')
+        return {
+            'status': 'ok',
+            'data': 'This is a put'
+        }
+    finally:
+        conn.close()
 
 @app.route('/api/tag/<tname>', methods=['DELETE'])
-def tag_delete(tname):
+def delete_tag(tname):
     if request.method == 'DELETE':
         try:
             print(type(tname))

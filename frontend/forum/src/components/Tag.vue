@@ -52,7 +52,7 @@ export default {
                     hot_value: 10000
                 }
             ],
-            key: []
+            pks: []
         }
     },
     mounted(){
@@ -60,20 +60,16 @@ export default {
             .get('http://127.0.0.1:5000/api/tag')
             .then(response => {
                 this.rows = response.data.rows;
-                this.key = response.data.key;
+                this.pks = response.data.pks;
             })
     },
     methods: {
         selectRow(idx){
-            var k = {}
-            for (var a of this.key){
-                k[a] = this.rows[idx][a]
-            }
             // alert(JSON.stringify(k));
             this.$router.push({
                 path: '/tag_update', 
                 query: {
-                    key: k
+                    pk: this.pks[idx]
                 }
             })
         }
