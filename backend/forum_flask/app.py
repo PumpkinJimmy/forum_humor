@@ -5,23 +5,17 @@ import json
 import psycopg2
 from psycopg2.pool import ThreadedConnectionPool
 
-from orm import Psycopg2Engine, DBSession
+from orm.engine import Psycopg2Engine
+from orm.session import DBSession
 from models import Tag
+import settings
 
 
-settings = {
-    'database':{
-        'dbname': 'test_forum',
-        'host': '192.168.56.104',
-        'port': 5432,
-        'user': 'win',
-        'password': 'Hsp;t1xX'
-    }
-}
 
-engine = Psycopg2Engine(**settings['database'])
 
-db = ThreadedConnectionPool(1, 20, **settings['database'])
+engine = Psycopg2Engine(**settings.database)
+
+db = ThreadedConnectionPool(1, 20, **settings.database)
 
 def create_app():
     app = Flask(__name__)
