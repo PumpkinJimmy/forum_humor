@@ -5,6 +5,10 @@ import json
 import psycopg2
 from psycopg2.pool import ThreadedConnectionPool
 
+from orm import Psycopg2Engine, DBSession
+from models import Tag
+
+
 settings = {
     'database':{
         'dbname': 'test_forum',
@@ -14,12 +18,11 @@ settings = {
         'password': 'Hsp;t1xX'
     }
 }
-class MyThreadedConnectionPool(ThreadedConnectionPool):
-    def __enter__(self):
-        pass
-    def __exit__(self):
-        pass
+
+engine = Psycopg2Engine(**settings['database'])
+
 db = ThreadedConnectionPool(1, 20, **settings['database'])
+
 def create_app():
     app = Flask(__name__)
 
@@ -58,13 +61,12 @@ def create_app():
         attrs = ('tname', 'hot_value')
         keys = ('tname', )
         
-        conn = db.getconn()
+        session = DBSession(engine)
+        conn = session.get_raw_conn()
 
         curs = conn.cursor()
         curs.execute('select * from tag')
         raw_data = curs.fetchall()
-
-        db.putconn(conn)
 
         rows = list(map(lambda t: dict(zip(attrs, t)), raw_data))
         # uris = list(map(lambda t: flask.url_for('get_tag', tname=t[0], _external=True), raw_data))
@@ -114,7 +116,8 @@ def create_app():
         new_tag = request.get_json()
         try:
             print(f"Try insert tuple {new_tag}")
-            conn = db.getconn()
+            session = DBSession(engine)
+            conn = session.get_raw_conn()
             curs = conn.cursor()
             curs.execute(
                 'insert into tag values (%(tname)s, %(hot_value)s)',
@@ -131,8 +134,6 @@ def create_app():
                 'status': 'ok',
                 'data': 'This is a post'
             }
-        finally:
-            db.putconn(conn)
 
     @app.route('/api/tag/<tname>', methods=['PUT'])
     def update_tag(tname):
