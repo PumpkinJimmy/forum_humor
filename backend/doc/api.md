@@ -3,7 +3,7 @@
 
 - 查询对象
   
-  URI: `/api/v1/<obj>/<primary_key...>`
+  API: `/api/v1/object/<model>/<primary key...>/`
 
   Method: `GET`
 
@@ -12,15 +12,15 @@
   | key name | type   | comment                             |
   | -------- | ------ | ----------------------------------- |
   | status   | String |                                     |
-  | object   | Object | Structure depends on Specified obj. |
+  | row      | Object | Structure depends on Specified obj. |
 
 - 增加对象
   
-  URI: `/api/v1/<obj>`
+  API: `/api/v1/object/<model>/`
 
   Method: `POST`
 
-  Request:
+  Response:
 
     | key name | type   | comment          |
     | -------- | ------ | ---------------- |
@@ -28,13 +28,27 @@
     | uri      | String | New object's uri |
 
 - 修改对象
+  
+  API: `/api/v1/object/<model>/<primary key...>/`
+
+  Method: `PUT`
+
+  Response:
+  
+  | key name | type   | comment |
+  | -------- | ------ | ------- |
+  | status   | String |         |
 
 
 - 删除对象
   
-  URI: `/api/v1/<obj>/<primary_key...>`
+  URI: `/api/v1/object/<model>/<primary_key...>`
 
   Method: `DELETE`
 
   Response:
+
+  | key name | type   | comment |
+  | -------- | ------ | ------- |
+  | status   | String |         |
 
