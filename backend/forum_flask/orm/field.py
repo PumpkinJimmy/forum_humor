@@ -29,7 +29,9 @@ class CharField(Field):
     pass
 
 class IntegerField(Field):
-    pass
+    @classmethod
+    def get_fmt(self):
+        return '%s'
 
 class AutoField(Field):
     pass

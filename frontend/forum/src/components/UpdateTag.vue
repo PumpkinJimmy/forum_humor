@@ -22,7 +22,7 @@ export default {
     },
     methods: {
         submit(){
-            axios.put('http://127.0.0.1:5000/api/tag/' + this.pk, this.new_value)
+            axios.put('http://127.0.0.1:5000' + this.uri, this.new_value)
             .then((response)=>{
                 alert(JSON.stringify(response.data))
                 this.$router.push({
@@ -31,7 +31,7 @@ export default {
             })
         },
         del(){
-            axios.delete('http://127.0.0.1:5000/api/tag/' + this.pk)
+            axios.delete('http://127.0.0.1:5000' + this.uri)
             .then((response)=>{
                 alert(JSON.stringify(response.data))
                 this.$router.push({
@@ -42,8 +42,8 @@ export default {
     },
     mounted(){
         // FIXME: use VUEX cache instead of repeated query
-        this.pk = this.$route.query.pk
-        axios.get('http://127.0.0.1:5000/api/tag/' + this.pk)
+        this.uri = this.$route.query.uri
+        axios.get('http://127.0.0.1:5000' + this.uri)
             .then(response=>{
                 this.new_value = response.data.row
             })

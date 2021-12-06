@@ -22,7 +22,7 @@ export default {
     methods: {
         submit(){
             axios.post(
-                'http://127.0.0.1:5000/api/tag',
+                'http://127.0.0.1:5000/api/v1/object/tag/',
                 this.new_data)
                 .then(response=>{
                     alert(JSON.stringify(response.data));

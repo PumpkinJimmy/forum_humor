@@ -47,6 +47,10 @@ class Model(metaclass=ModelMetaClass):
         build object from tuple row
         '''
         return cls(dict(zip(cls.__fields__, row)))
+    
+    @classmethod
+    def get_key_fmtstr(cls) -> str:
+        return ','.join(map(lambda pk: f'{pk}={cls.get_field(pk).get_fmt()}', cls.__pk__))
 
     def __init__(self, data, **kwargs):
         '''
@@ -59,6 +63,14 @@ class Model(metaclass=ModelMetaClass):
     
     def get_data(self) -> dict:
         return self._data
+    
+    def get_key(self) -> dict:
+        return dict(filter(lambda p: p[0] in self.__pk__, self._data.items()))
+    
+    def get_keyval(self) -> tuple:
+        return tuple(self.get_key().values())
+    
+    
     
     def to_json(self) -> dict:
         return self._data

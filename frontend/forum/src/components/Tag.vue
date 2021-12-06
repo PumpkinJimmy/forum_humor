@@ -52,15 +52,15 @@ export default {
                     hot_value: 10000
                 }
             ],
-            pks: []
+            uris: []
         }
     },
     mounted(){
         axios
-            .get('http://127.0.0.1:5000/api/tag')
+            .get('http://127.0.0.1:5000/api/v1/object/tag/')
             .then(response => {
                 this.rows = response.data.rows;
-                this.pks = response.data.pks;
+                this.uris = response.data.uris;
             })
     },
     methods: {
@@ -69,7 +69,7 @@ export default {
             this.$router.push({
                 path: '/tag_update', 
                 query: {
-                    pk: this.pks[idx]
+                    uri: this.uris[idx]
                 }
             })
         }

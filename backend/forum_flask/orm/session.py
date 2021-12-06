@@ -10,23 +10,24 @@ class DBSession:
         self.conn = self.engine.getconn()
     
     def __del__(self):
+        self.conn.commit()
         self.engine.putconn(self.conn)
     
     def get_raw_conn(self):
         return self.conn
     
-    def select(self, model: Model, *args, **kwargs) -> QuerySet:
-        return self.engine.select(self.conn, model, *args, **kwargs)
+    def select(self, *args, **kwargs) -> QuerySet:
+        return self.engine.select(self.conn, *args, **kwargs)
             
     
-    def insert(self, *cond):
-        pass
+    def insert(self, *args, **kwargs):
+        return self.engine.insert(self.conn, *args, **kwargs)
 
-    def update(self, *cond):
-        pass
+    def update(self, *args, **kwargs):
+        return self.engine.update(self.conn, *args, **kwargs)
 
-    def delete(self, *cond):
-        pass
+    def delete(self, *args, **kwargs):
+        return self.engine.delete(self.conn, *args, **kwargs)
 
     def commit(self):
         self.conn.commit()
