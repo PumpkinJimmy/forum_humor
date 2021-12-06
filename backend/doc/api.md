@@ -12,7 +12,7 @@
   | key name | type   | comment                             |
   | -------- | ------ | ----------------------------------- |
   | status   | String |                                     |
-  | row      | Object | Structure depends on Specified obj. |
+  | obj      | Object | Structure depends on Specified obj. |
 
 - 增加对象
   
@@ -25,7 +25,6 @@
     | key name | type   | comment          |
     | -------- | ------ | ---------------- |
     | status   | String |                  |
-    | uri      | String | New object's uri |
 
 - 修改对象
   
@@ -52,3 +51,16 @@
   | -------- | ------ | ------- |
   | status   | String |         |
 
+- 查询对象列表
+  
+  API: `/api/v1/object/<model>/`
+
+  Method: `GET`
+
+  Response:
+
+    | key name | type   | comment         |
+    | -------- | ------ | --------------- |
+    | status   | String |                 |
+    | objs     | Array  | Array of Object |
+    | uris     | Array  | Array of String |
