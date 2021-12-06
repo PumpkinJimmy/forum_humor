@@ -2,6 +2,7 @@ import psycopg2
 from psycopg2.pool import ThreadedConnectionPool
 
 from .error import ORMError
+from .queryset import QuerySet
 
 class Engine:
     pass
@@ -11,6 +12,9 @@ class Engine:
         raise NotImplemented()
 
     def putconn(self, conn):
+        raise NotImplemented()
+    
+    def select(self, conn, model, *args, **kwargs):
         raise NotImplemented()
 
 class Psycopg2Engine(Engine):
@@ -31,3 +35,19 @@ class Psycopg2Engine(Engine):
     
     def putconn(self, conn):
         self.pool.putconn(conn)
+    
+    def select(self, conn, model, *args, **kwargs):
+        curs = conn.cursor()
+        pk = kwargs.get('pk', None)
+        if pk is None:
+            curs.execute(f'select * from {model.__tablename__}')
+        else:
+            if type(pk) != list or type(pk) != tuple:
+                pk = (pk, )
+            pk_query_str = ' and '.join(map(
+                lambda a: f'{a}={model.get_field(a).get_fmt()}', 
+                model.__pk__))
+            print(f'Auto construct SQL: select * from {model.__tablename__} where {pk_query_str}')
+            curs.execute(f'select * from {model.__tablename__} where {pk_query_str}', pk)
+        res = curs.fetchall()
+        return QuerySet(map(model.from_tuple, res))

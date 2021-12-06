@@ -1,10 +1,11 @@
-from . import engine
-class QuerySet:
-    pass
+from .model import Model
+from .engine import Engine
+from typing import List, Dict, Tuple
+from .queryset import QuerySet
         
 
 class DBSession:
-    def __init__(self, engine: engine.Engine):
+    def __init__(self, engine: Engine):
         self.engine = engine
         self.conn = self.engine.getconn()
     
@@ -14,8 +15,9 @@ class DBSession:
     def get_raw_conn(self):
         return self.conn
     
-    def select(model, *cond) -> QuerySet:
-        pass
+    def select(self, model: Model, *args, **kwargs) -> QuerySet:
+        return self.engine.select(self.conn, model, *args, **kwargs)
+            
     
     def insert(self, *cond):
         pass

@@ -26,22 +26,6 @@ def create_app():
     def hello_forum():
         return '<p>Hello, Forum!</p>'
 
-    @app.route('/api/forum_user', methods=['GET', 'PUT', 'DELETE'])
-    def forum_user_access():
-        if request.method == 'GET':
-            attrs = ('uid', 'uname', 'email', 'gender', 'password', 'signature')
-            conn = psycopg2.connect(**settings['database'])
-            curs = conn.cursor()
-            curs.execute('select * from forum_user')
-            raw_data = curs.fetchall()
-            data = list(map(lambda t: dict(zip(attrs, t)), raw_data))
-            return {
-                'status': 'ok',
-                'data': data
-            }
-        else:
-            return '<p>Method not support yes</p>'
-
     @app.route('/api/tag', methods=['GET'])
     def get_tags():
         '''
@@ -51,25 +35,12 @@ def create_app():
             pks: Array
         }
         '''
-
-        attrs = ('tname', 'hot_value')
-        keys = ('tname', )
-        
         session = DBSession(engine)
-        conn = session.get_raw_conn()
-
-        curs = conn.cursor()
-        curs.execute('select * from tag')
-        raw_data = curs.fetchall()
-
-        rows = list(map(lambda t: dict(zip(attrs, t)), raw_data))
-        # uris = list(map(lambda t: flask.url_for('get_tag', tname=t[0], _external=True), raw_data))
-        pks = list(map(lambda t: t[0], raw_data))
+        res = session.select(Tag)
+        # FIXME: No URI Provided
         return {
-            'status': 'ok',
-            'rows': rows,
-            'pks': pks
-            # 'uris': uris
+            'status': 'testing',
+            'rows': res.to_json()
         }
 
     @app.route('/api/tag/<tname>', methods=['GET'])
@@ -81,26 +52,32 @@ def create_app():
             pk: String
         }
         '''
-        attrs = ('tname', 'hot_value')
-        keys = ('tname', )
-        
-        conn = db.getconn()
-        curs = conn.cursor()
-
-        curs.execute('select * from tag where tname=%s', [tname])
-        raw_data = curs.fetchall()
-
-        db.putconn(conn)
-
-        row = dict(zip(attrs, raw_data[0]))
-        pk = raw_data[0][0]
-        # uri = flask.url_for('get_tag', tname=raw_data[0][0])
+        session = DBSession(engine)
+        res = session.select(Tag, pk=tname)
         return {
-            'status': 'ok',
-            'row': row,
-            'pk': pk
-            # 'uri': uri
+            'status': 'testing',
+            'row': res.one().to_json()
         }
+        # attrs = ('tname', 'hot_value')
+        # keys = ('tname', )
+        
+        # conn = db.getconn()
+        # curs = conn.cursor()
+
+        # curs.execute('select * from tag where tname=%s', [tname])
+        # raw_data = curs.fetchall()
+
+        # db.putconn(conn)
+
+        # row = dict(zip(attrs, raw_data[0]))
+        # pk = raw_data[0][0]
+        # # uri = flask.url_for('get_tag', tname=raw_data[0][0])
+        # return {
+        #     'status': 'ok',
+        #     'row': row,
+        #     'pk': pk
+        #     # 'uri': uri
+        # }
 
     @app.route('/api/tag', methods=['POST'])
     def create_tag():
