@@ -9,7 +9,7 @@ from werkzeug.routing import BaseConverter
 
 from orm.engine import Psycopg2Engine
 from orm.session import DBSession
-from models import Tag
+from models import Tag, ForumUser
 import settings
 
 
@@ -33,7 +33,8 @@ def create_app():
     
     class ModelConverter(BaseConverter):
         registered_models = {
-            'tag': Tag
+            'tag': Tag,
+            'user': ForumUser
         }
         def to_python(self, model_name):
             return self.registered_models[model_name]
@@ -68,7 +69,10 @@ def create_app():
         '''
         session = DBSession(engine)
         res = session.select(model)
-        uris = [url_for('get_object', model=model, pk=tuple(obj.get_key().values())) for obj in res.all()]
+        uris = [
+            url_for('get_object', model=model, pk=tuple(obj.get_key().values())) 
+            for obj in res.all()
+        ]
         return {
             'status': 'ok',
             'rows': res.to_json(),
