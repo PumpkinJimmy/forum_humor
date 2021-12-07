@@ -42,7 +42,7 @@ export default {
     mounted(){
         axios
             .get('http://127.0.0.1:5000/api/v1/object/user/')
-            .then(response => (this.forum_users = response.data.rows))
+            .then(response => (this.forum_users = response.data.objs))
     }
 }
 </script>

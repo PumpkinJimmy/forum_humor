@@ -6,6 +6,7 @@ import json
 import psycopg2
 from psycopg2.pool import ThreadedConnectionPool
 from werkzeug.routing import BaseConverter
+from orm.model import ModelMetaClass
 
 from orm.engine import Psycopg2Engine
 from orm.session import DBSession
@@ -60,13 +61,7 @@ def create_app():
 
     @app.route('/api/v1/object/<model:model>/', methods=['GET'])
     def get_objects(model):
-        '''
-        {
-            status: String
-            rows: Array of Object
-            uris: Array of String
-        }
-        '''
+
         session = DBSession(engine)
         res = session.select(model)
         uris = [
@@ -75,24 +70,18 @@ def create_app():
         ]
         return {
             'status': 'ok',
-            'rows': res.to_json(),
+            'objs': res.to_json(),
             'uris': uris
         }
 
     @app.route('/api/v1/object/<model:model>/<key:pk>/', methods=['GET'])
     def get_object(model, pk):
-        '''
-        {
-            status: String,
-            row: Object,
-            uri: String
-        }
-        '''
+
         session = DBSession(engine)
         res = session.select(model, pk=pk)
         return {
             'status': 'ok',
-            'row': res.one().to_json(),
+            'obj': res.one().to_json(),
             'uri': url_for('get_object', model=model, pk=res.one().get_key().values())
         }
         
@@ -145,5 +134,14 @@ def create_app():
             return {
                 'status': 'ok'
             }
+    
+    @app.route('/api/v1/form/<model:model>/', methods=['GET'])
+    def get_for_listview(model):
+        return {
+            'status': 'ok',
+            'layout': model.__fields__
+        }
 
     return app
+
+    

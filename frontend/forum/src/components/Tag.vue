@@ -3,8 +3,7 @@
         <h3>Tags</h3>
         <table>
             <tr v-for="(tag, idx) in rows" v-bind:key="idx" v-on:click="selectRow(idx)">
-                <td>{{tag.tname}}</td>
-                <td>{{tag.hot_value}}</td>
+                <td v-for="(k, j) in header" v-bind:key="j">{{ tag[k] }}</td>
             </tr>
         </table>
         <router-link to='/new_tag'><button>New Tag</button></router-link>
@@ -52,16 +51,21 @@ export default {
                     hot_value: 10000
                 }
             ],
-            uris: []
+            uris: [],
+            header: []
         }
     },
     mounted(){
         axios
             .get('http://127.0.0.1:5000/api/v1/object/tag/')
             .then(response => {
-                this.rows = response.data.rows;
+                this.rows = response.data.objs;
                 this.uris = response.data.uris;
-            })
+            });
+        axios.get('http://127.0.0.1:5000/api/v1/form/tag/')
+            .then(response => {
+                this.header = response.data.layout;
+            });
     },
     methods: {
         selectRow(idx){

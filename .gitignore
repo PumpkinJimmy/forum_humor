@@ -6,7 +6,8 @@ scratch
 # JS
 node_modules/
 *.ico
-*.png
+assets/
+
 
 # python
 *.pyc
