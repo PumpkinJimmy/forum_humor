@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="forum-user-com">
         <h3>ForumUsers</h3>
         <table>
             <tr v-for="user in forum_users" v-bind:key="user[0]">
@@ -15,14 +15,14 @@
 </template>
 
 <style>
-    table {
+    .forum-user-com table {
         margin-left: auto;
         margin-right: auto;
         margin-top: 100px;
         margin-bottom: 100px;
         border: 1px black solid;
     }
-    td {
+    .forum-user-com td {
         border: 1px black solid;
         min-width: 100px;
     }
