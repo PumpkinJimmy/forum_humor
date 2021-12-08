@@ -40,8 +40,13 @@
 
     <v-main>
       <div>
-    <router-link to="/tag">Tags</router-link>
-      <router-link to="/forum_user">ForumUsers</router-link>
+        <v-tabs>
+          <!-- <v-tab href="/tag">Tag</v-tab>
+          <v-tab href="/forum_user">Forum User</v-tab> -->
+          
+    <v-tab><router-link to="/tag" style="display:block">Tags</router-link></v-tab>
+      <v-tab><router-link to="/forum_user">ForumUsers</router-link></v-tab>
+      </v-tabs>
     </div>
     
     <router-view></router-view>
@@ -54,7 +59,7 @@
 // import HelloWorld from './components/HelloWorld';
 
 export default {
-  name: 'App',
+  name: "App",
 
   components: {
     // HelloWorld,
