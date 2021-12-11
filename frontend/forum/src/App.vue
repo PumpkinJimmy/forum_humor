@@ -1,11 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-      color="primary"
-      dark
-    >
-    
+    <v-app-bar app color="primary" dark>
       <div class="d-flex align-center">
         <v-img
           alt="Vuetify Logo"
@@ -39,17 +34,23 @@
     </v-app-bar>
 
     <v-main>
-      <div>
-        <v-tabs>
-          <!-- <v-tab href="/tag">Tag</v-tab>
-          <v-tab href="/forum_user">Forum User</v-tab> -->
-          
-    <v-tab><router-link to="/tag" style="display:block">Tags</router-link></v-tab>
-      <v-tab><router-link to="/forum_user">ForumUsers</router-link></v-tab>
-      </v-tabs>
-    </div>
-    
-    <router-view></router-view>
+      <v-row justify="center">
+        <v-col cols="8">
+          <v-card>
+          <v-list>
+            <v-subheader>Models</v-subheader>
+            <v-list-item-group color="primary">
+              <v-list-item @click="route_to($event, '/object/tag')">Tag</v-list-item>
+              <v-list-item @click="route_to($event, '/object/user')"
+                >Forum User</v-list-item
+              >
+            </v-list-item-group>
+          </v-list>
+          </v-card>
+        </v-col>
+      </v-row>
+
+      <router-view></router-view>
       <!-- <HelloWorld/> -->
     </v-main>
   </v-app>
@@ -68,6 +69,12 @@ export default {
   data: () => ({
     //
   }),
+
+  methods: {
+    route_to(ev, loc) {
+      this.$router.push(loc);
+    },
+  },
 };
 </script>
 

@@ -137,6 +137,7 @@ def create_app():
     
     @app.route('/api/v1/form/<model:model>/', methods=['GET'])
     def get_for_listview(model):
+        raise NotImplemented()
         return {
             'status': 'ok',
             'layout': model.__fields__
