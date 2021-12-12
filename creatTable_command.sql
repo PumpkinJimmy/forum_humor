@@ -82,9 +82,10 @@ CREATE TABLE TagofUser
 
 CREATE TABLE Tag_log
 (
-        tname VARCHAR(20) PRIMARY KEY,
+        tname VARCHAR(20) NOT NULL,
         uid CHAR(20) NOT NULL,
         access_time DATE NOT NULL,
+        PRIMARY KEY (tname, uid, access_time),
         constraint Tl_tname_T foreign key(tname) references Tag(tname),
         constraint Tl_uid_FU foreign key(uid) references ForumUser(uid)
 );
