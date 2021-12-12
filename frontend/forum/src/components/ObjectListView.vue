@@ -135,8 +135,6 @@ export default {
       dialogDelete: false,
       editedIndex: -1,
       editedItem: {
-        tname: "",
-        hot_value: 0,
       },
       defaultItem: {
         tname: "",
@@ -164,6 +162,8 @@ export default {
         console.error(err);
         this.formFailAlert = true;
         this.model.attrs = Object.keys(this.rows[0]);
+        this.editedItem = Object.fromEntries(this.model.attrs.map((a)=>[a,null]))
+        this.defaultItem = Object.fromEntries(this.model.attrs.map((a)=>[a,null]))
         this.headers = this.model.attrs
           .map((a) => {
             return {
@@ -201,8 +201,19 @@ export default {
     },
 
     deleteItemConfirm() {
-      this.rows.splice(this.editedIndex, 1);
-      this.closeDelete();
+      axios.delete(`http://127.0.0.1:5000${this.uris[this.editedIndex]}`)
+        .then((response)=>{
+          console.log(`Delete status: ${response.data.status}`)
+          this.rows.splice(this.editedIndex, 1);
+          this.uris.splice(this.editedIndex, 1);
+          this.closeDelete();
+        })
+        .catch((err)=>{
+          console.log("Delete fail");
+          console.log(err);
+          this.closeDelete();
+        })
+      
     },
 
     close() {
@@ -223,11 +234,37 @@ export default {
 
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.rows[this.editedIndex], this.editedItem);
+        axios.put(`http://127.0.0.1:5000${this.uris[this.editedIndex]}`, this.editedItem)
+          .then((response)=>{
+            console.log(`Update status: ${response.data.status}`)
+            Object.assign(this.rows[this.editedIndex], this.editedItem);
+            this.uris[this.editedIndex] = response.data.uri;
+            this.close();
+          })
+          .catch((err)=>{
+            console.log("Update failed")
+            console.log(err)
+            this.close();
+          })
+        
       } else {
-        this.rows.push(this.editedItem);
+        axios.post(`http://127.0.0.1:5000/api/v1/object/${this.modelName}/`, this.editedItem)
+        .then((response)=>{
+          if (response.data.status != 'ok'){
+            throw Error;
+          }
+          console.log(`Create status: ${response.data.status}`)
+          this.rows.push(this.editedItem);
+          this.uris.push(response.data.uri);
+          this.close();
+        })
+        .catch((err)=>{
+          console.log("Create failed")
+          console.log(err)
+          this.close();
+        })
       }
-      this.close();
+      
     },
   },
   computed: {
