@@ -103,7 +103,8 @@ def create_app():
             }
         else:
             return {
-                'status': 'ok'
+                'status': 'ok',
+                'uri': url_for('get_object', model=model, pk=new_obj.get_keyval())
             }
 
     @app.route('/api/v1/object/<model:model>/<key:pk>/', methods=['PUT'])
@@ -112,9 +113,9 @@ def create_app():
         req: Object
         '''
         session = DBSession(engine)
-        new_value = model(request.get_json())
+        new_obj = model(request.get_json())
         try:
-            session.update(new_value, pk=pk)
+            session.update(new_obj, pk=pk)
             session.commit()
         except psycopg2.Error as e:
             print(e)
@@ -123,7 +124,8 @@ def create_app():
             }
         else:
             return {
-                'status': 'ok'
+                'status': 'ok',
+                'uri': url_for('get_object', model=model, pk=new_obj.get_keyval())
             }
 
     @app.route('/api/v1/object/<model:model>/<key:pk>/', methods=['DELETE'])
