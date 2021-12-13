@@ -9,7 +9,6 @@ inputVecFile = "6class_classification\\checkpoint\\docVec_Matrix.npy"
 class Net(nn.Module):
     '''
     定义神经网络类
-    以下定义了两种结构
     '''
     def __init__(self, input_size):
         super(Net, self).__init__()
