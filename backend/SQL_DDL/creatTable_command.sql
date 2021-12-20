@@ -1,6 +1,6 @@
-CREATE TABLE ForumUser
+CREATE TABLE forum_user
 (
-        uid CHAR(20) PRIMARY KEY,
+        uid serial PRIMARY KEY,
         uname VARCHAR(20) NOT NULL,
         profile BLOB,
         email CHAR(20),
@@ -9,46 +9,49 @@ CREATE TABLE ForumUser
         signature VARCHAR(50)
 );
 
-CREATE TABLE ForumGroupLeader
+CREATE TABLE forum_group
 (
-        gid CHAR(20) PRIMARY KEY,
+        gid serial PRIMARY KEY,
+        gname VARCHAR(20) NOT NULL,
         admin_uid CHAR(20),
-        constraint G_auid_FU foreign key(admin_uid) references ForumUser(uid)
+        constraint G_auid_FU foreign key(admin_uid) references forum_user(uid);
 );
 
-CREATE TABLE ForumGroupMember
+CREATE TABLE group_member
 (
-        gid CHAR(20) PRIMARY KEY,
+        gid CHAR(20),
         member_uid CHAR(20),
-        constraint G_muid_FU foreign key(member_uid) references ForumUser(uid)
+        constraint PK_FGM primary key(gid, member_uid);
+        constraint G_muid_FU foreign key(member_uid) references forum_user(uid)
+        constraint G_gid_FG foreign key(gid) references ForumGroup(gid)
 );
 
-CREATE TABLE Message
+CREATE TABLE message
 (
-        time_stamp DATE NOT NULL,
+        mid serial PRIMARY KEY,
+        time_stamp TIMESTAMP NOT NULL,
         from_uid CHAR(20) NOT NULL,
         to_uid CHAR(20) NOT NULL,
         content VARCHAR(200),
-        PRIMARY KEY (time_stamp, from_uid, to_uid),
-        constraint M_fuid_FU foreign key(from_uid) references ForumUser(uid),
-        constraint M_tuid_FU foreign key(to_uid) references ForumUser(uid)
+        constraint M_fuid_FU foreign key(from_uid) references forum_user(uid),
+        constraint M_tuid_FU foreign key(to_uid) references forum_user(uid)
 );
 
-CREATE TABLE Post
+CREATE TABLE post
 (
-        pid CHAR(20) PRIMARY KEY,
+        pid serial PRIMARY KEY,
         hot_value INTEGER CHECK(hot_value>0),
         title VARCHAR(20),
         content VARCHAR(200),
         post_time DATE,
         last_modified_time DATE,
         poster_uid CHAR(20),
-        constraint P_puid_FU foreign key(poster_uid) references ForumUser(uid)
+        constraint P_puid_FU foreign key(poster_uid) references forum_user(uid)
 );
 
-CREATE TABLE Comment
+CREATE TABLE comment
 (
-        cid CHAR(20) PRIMARY KEY,
+        cid serial PRIMARY KEY,
         ctime DATE,
         like_num INTEGER,
         content VARCHAR(200),
@@ -58,13 +61,13 @@ CREATE TABLE Comment
         constraint C_fpid_P foreign key(from_pid) references Post(pid)
 );
 
-CREATE TABLE Tag
+CREATE TABLE tag
 (
         tname VARCHAR(20) PRIMARY KEY,
         hot_value INTEGER CHECK(hot_value>0)
 );
 
-CREATE TABLE TagofPost
+CREATE TABLE tag_post
 (
         tname VARCHAR(20) NOT NULL,
         pid CHAR(20) NOT NULL,
@@ -73,7 +76,7 @@ CREATE TABLE TagofPost
         constraint TP_pid_P foreign key(pid) references Post(pid)
 );
 
-CREATE TABLE TagofUser
+CREATE TABLE tag_user
 (
         tname VARCHAR(20) NOT NULL,
         uid CHAR(20) NOT NULL,
@@ -82,7 +85,7 @@ CREATE TABLE TagofUser
         constraint TU_uid_FU foreign key(uid) references ForumUser(uid)
 );
 
-CREATE TABLE Tag_log
+CREATE TABLE tag_log
 (
         tname VARCHAR(20) NOT NULL,
         uid CHAR(20) NOT NULL,
