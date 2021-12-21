@@ -5,6 +5,8 @@ import string
 import time
 import datetime
 
+# TODO: fix randint range bug
+
 G = ['M', 'F']
 startuid, enduid = 1, 10000
 startgid, endgid = 1, 10000
@@ -34,7 +36,7 @@ def rand_date():
 def rand_ForumUser():
     with open('random_Data\\ForumUser.csv', 'w+', encoding='utf-8') as f:
         f.write('uid,uname,profile,email,gender,password,signature\n')
-        for uid in range(startuid, enduid):
+        for uid in range(startuid, enduid+1):
             uname = rand_str(random.randint(1, 20))
             email = rand_str(10) + "@123.com"
             gender = G[random.randint(0, 1)]
