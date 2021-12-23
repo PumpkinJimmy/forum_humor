@@ -1,5 +1,10 @@
 <template>
-  <div class="crud-view">
+  <div class="crud-view elevation-2">
+    <dialog-edit-object
+    v-model="dialogEdit"
+    :form="form"
+    :type="dialogType">
+    </dialog-edit-object>
     <v-row justify="center">
       <v-col cols="12">
         <v-data-table
@@ -16,7 +21,10 @@
               <v-toolbar-title>{{ modelName }}</v-toolbar-title>
               <v-divider class="mx-4" inset vertical></v-divider>
               <v-spacer></v-spacer>
-              <dialog-edit-object></dialog-edit-object>
+              <v-btn class="mx-2" small fab color="indigo"
+              @click="onNew">
+                <v-icon dark> mdi-plus </v-icon>
+              </v-btn>
             </v-toolbar>
           </template>
           <template v-slot:no-data>
@@ -44,6 +52,9 @@ export default {
       model: {},
       serverLength: 100,
       loading: false,
+      dialogEdit: false,
+      dialogType: 'create',
+      form: [],
       default_headers: [
         {
           text: "Tag Name",
@@ -84,22 +95,21 @@ export default {
   methods: {
     getObjects(limit, offset) {
       if (this.serverLength == 0) return;
+      this.loading = true;
       var api;
-      if (limit == undefined){
+      if (limit == undefined) {
         api = `http://127.0.0.1:5000/api/v1/object/${this.modelName}/`;
-      }
-      else{
+      } else {
         api = `http://127.0.0.1:5000/api/v1/object/${this.modelName}/?offset=${offset}&limit=${limit}`;
       }
-      axios
-        .get(api)
-        .then((response) => {
-          this.rows = response.data.objs;
-          var uris = response.data.uris;
-          for (var i = 0; i < uris.length; i++) {
-            this.rows[i].uri = uris[i];
-          }
-        })
+      axios.get(api).then((response) => {
+        this.rows = response.data.objs;
+        var uris = response.data.uris;
+        for (var i = 0; i < uris.length; i++) {
+          this.rows[i].idx = i;
+        }
+        this.loading = false;
+      });
     },
     renderEditor() {
       axios
@@ -108,7 +118,6 @@ export default {
         )
         .then((response) => {
           this.serverLength = response.data.count;
-          
         })
         .catch(() => {
           this.serverLength = 0;
@@ -136,13 +145,22 @@ export default {
           });
         });
     },
+    onNew(){
+      this.dialogType = "create";
+      const keys = Object.keys(this.rows[0]);
+      this.form = Object.fromEntries(keys.map((k)=>[k,null]));
+      this.dialogEdit = true;
+    },
     onClickRow(item) {
-      console.log(item);
+      this.dialogType = "edit";
+      this.form = this.rows[item.idx];
+      this.dialogEdit = true;
     },
     onPaginate(options) {
-      const {  page, itemsPerPage } = options
+      const { page, itemsPerPage } = options;
       const offset = itemsPerPage * (page - 1);
       const limit = itemsPerPage;
+      
       this.getObjects(limit, offset);
     },
   },
