@@ -108,6 +108,22 @@ export default {
         for (var i = 0; i < uris.length; i++) {
           this.rows[i].idx = i;
         }
+        axios
+        .get(`http://127.0.0.1:5000/api/v1/form/${this.modelName}/`)
+        .then((response) => {
+          this.model = response.data.model;
+        })
+        .catch((err) => {
+          console.error(err);
+          this.formFailAlert = true;
+          this.model.attrs = Object.keys(this.rows[0]);
+          this.headers = this.model.attrs.map((a) => {
+            return {
+              text: a,
+              value: a,
+            };
+          });
+        });
         this.loading = false;
       });
     },
@@ -118,32 +134,12 @@ export default {
         )
         .then((response) => {
           this.serverLength = response.data.count;
+          this.getObjects(15, 0);
         })
         .catch(() => {
           this.serverLength = 0;
         });
-      axios
-        .get(`http://127.0.0.1:5000/api/v1/form/${this.modelName}/`)
-        .then((response) => {
-          this.model = response.data.model;
-        })
-        .catch((err) => {
-          console.error(err);
-          this.formFailAlert = true;
-          this.model.attrs = Object.keys(this.rows[0]);
-          this.editedItem = Object.fromEntries(
-            this.model.attrs.map((a) => [a, null])
-          );
-          this.defaultItem = Object.fromEntries(
-            this.model.attrs.map((a) => [a, null])
-          );
-          this.headers = this.model.attrs.map((a) => {
-            return {
-              text: a,
-              value: a,
-            };
-          });
-        });
+        
     },
     onNew(){
       this.dialogType = "create";

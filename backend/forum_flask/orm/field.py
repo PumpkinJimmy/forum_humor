@@ -43,6 +43,8 @@ class BlobField(Field):
 class EnumField(Field):
     pass
 
+class DatetimeField(Field):
+    pass
 
 class ForeignField(Field):
     pass

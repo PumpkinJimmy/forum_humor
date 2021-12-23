@@ -10,7 +10,7 @@ from orm.model import ModelMetaClass
 
 from orm.engine import Psycopg2Engine
 from orm.session import DBSession
-from models import Tag, ForumUser
+import models
 import settings
 
 
@@ -34,8 +34,9 @@ def create_app():
     
     class ModelConverter(BaseConverter):
         registered_models = {
-            'tag': Tag,
-            'user': ForumUser
+            'user': models.ForumUser,
+            'post': models.Post,
+            'message': models.Message
         }
         def to_python(self, model_name):
             return self.registered_models[model_name]
