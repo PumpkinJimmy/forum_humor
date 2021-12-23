@@ -8,9 +8,10 @@ class Tag(Model):
 
 class ForumUser(Model):
     __tablename__ = 'forum_user'
-    uid = IntegerField(primary_key=True)
-    uname = CharField()
+    uid = AutoField(primary_key=True)
+    uname = CharField(null=False)
+    profile = BlobField()
     email = CharField()
-    gender = CharField()
+    gender = EnumField()
     password = CharField(null=False)
     signature = CharField()

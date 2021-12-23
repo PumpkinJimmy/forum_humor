@@ -12,6 +12,7 @@ assets/
 # python
 *.pyc
 *.pyo
+__pycache__
 
 # ER
 !ER*.png

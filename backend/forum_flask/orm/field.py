@@ -36,3 +36,16 @@ class IntegerField(Field):
 
 class AutoField(Field):
     pass
+
+class BlobField(Field):
+    pass
+
+class EnumField(Field):
+    pass
+
+
+class ForeignField(Field):
+    pass
+
+class ManyToManyField(Field):
+    pass
