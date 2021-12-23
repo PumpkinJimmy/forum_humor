@@ -61,10 +61,23 @@ def create_app():
 
     @app.route('/api/v1/object/<model:model>/', methods=['GET'])
     def get_objects(model):
+        session = DBSession(engine)
+        if request.args.get('count_only', 'false') == 'true':
+            # Todo: engine support aggregation
+            conn = session.get_raw_conn()
+            curs = conn.cursor()
+            curs.execute(f'select count(*) from {model.__tablename__}')
+            res = curs.fetchall()[0]
+            return {
+                'status': 'fail',
+                'objs': [],
+                'uris': [],
+                'count': int(res[0])
+            }
         offset = request.args.get('offset', 0)
         limit = request.args.get('limit')
         
-        session = DBSession(engine)
+        
 
         if limit is None:
             res = session.select(model)
@@ -83,7 +96,7 @@ def create_app():
                 }
             else:
                 res = session.select(model, limit=limit, offset=offset)
-                
+
         uris = [
             url_for('get_object', model=model, pk=tuple(obj.get_key().values())) 
             for obj in res.all()
