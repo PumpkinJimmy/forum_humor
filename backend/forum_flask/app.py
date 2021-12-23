@@ -70,7 +70,7 @@ def create_app():
             curs.execute(f'select count(*) from {model.__tablename__}')
             res = curs.fetchall()[0]
             return {
-                'status': 'fail',
+                'status': 'ok',
                 'objs': [],
                 'uris': [],
                 'count': int(res[0])
