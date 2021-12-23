@@ -61,13 +61,34 @@ def create_app():
 
     @app.route('/api/v1/object/<model:model>/', methods=['GET'])
     def get_objects(model):
-
+        offset = request.args.get('offset', 0)
+        limit = request.args.get('limit')
+        
         session = DBSession(engine)
-        res = session.select(model)
+
+        if limit is None:
+            res = session.select(model)
+        else:
+            try:
+                limit = int(limit)
+                offset = int(offset)
+                assert limit >= 0
+                assert offset  >= 0
+            except:
+                return {
+                    'status': 'fail',
+                    'objs': [],
+                    'uris': [],
+                    'message': 'invalid pagination info'
+                }
+            else:
+                res = session.select(model, limit=limit, offset=offset)
+                
         uris = [
             url_for('get_object', model=model, pk=tuple(obj.get_key().values())) 
             for obj in res.all()
         ]
+        
         return {
             'status': 'ok',
             'objs': res.to_json(),

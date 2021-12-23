@@ -50,7 +50,12 @@ class Psycopg2Engine(Engine):
         curs = conn.cursor()
         pk = kwargs.get('pk', None)
         if pk is None:
-            curs.execute(f'select * from {model.__tablename__}')
+            limit = kwargs.get('limit')
+            offset = kwargs.get('offset', 0)
+            if limit is not None:
+                curs.execute(f'select * from {model.__tablename__} limit {limit} offset {offset}')
+            else:
+                curs.execute(f'select * from {model.__tablename__}')
         else:
             if type(pk) != list and type(pk) != tuple:
                 pk = (pk, )
