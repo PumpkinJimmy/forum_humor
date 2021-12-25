@@ -7,28 +7,55 @@
 
       <v-card-text>
         <v-container>
-          <v-row>
-            <!-- <v-col
-              v-for="(attr, idx) in model.attrs"
-              :key="idx"
-              cols="12"
-              sm="6"
-              md="4"
-            >
-              <v-text-field
-                v-model="editedItem[attr]"
-                :label="attr"
-              ></v-text-field>
-            </v-col> -->
-          </v-row>
           <v-row
-          v-for="( v, k, idx) in form"
+          v-for="(ftype,fname,idx) in model.fields"
           :key="idx">
           <v-col cols="12">
+            <v-text-field 
+            v-if="(ftype=='char')"
+            :label="fname"
+            >
+            </v-text-field>
+
             <v-text-field
-              v-model="form[k]"
-              :label="k"
-              ></v-text-field>
+            v-if="ftype=='email'"
+            :label="fname">
+            </v-text-field>
+
+            <v-text-field
+            v-if="ftype=='auto'"
+            :label="fname">
+            </v-text-field>
+
+            <v-text-field
+            v-if="ftype=='password'"
+            :label="fname">
+            </v-text-field>
+
+            <v-select
+            v-if="ftype=='enum'"
+            :label="fname"
+            >
+            </v-select>
+
+            <v-select
+            v-if="ftype=='foreign'"
+            :label="fname"
+            >
+            </v-select>
+
+            <v-file-input 
+            v-if="(ftype == 'image') || (ftype=='file')"
+            :label="fname"
+            ></v-file-input>
+
+            <v-input
+            v-if="ftype == 'datetime'"
+            :label="fname"
+            >
+            <datepicker :date="tmp"></datepicker>
+            </v-input>
+           
           </v-col>
           </v-row>
         </v-container>
@@ -45,9 +72,27 @@
 </template>
 
 <script>
+import Datepicker from 'vue-datepicker';
 export default {
   name: "DialogEditObject",
-  props: ["form", "value", "type"],
+  props: ["model", "value", "type"],
+  components:{
+    datepicker: Datepicker
+  },
+  data(){
+    return {
+      tmp: {},
+      componentType:{
+        email: 'V-text-field',
+        enum: 'v-text-field',
+        password: 'v-text-field',
+        image: 'v-textarea',
+        auto: 'v-text-field',
+        char: 'v-text-field',
+        integer: 'v-text-field',
+      }
+    }
+  },
   watch: {
       value(bool){
           this.$emit('input', bool);
@@ -56,6 +101,12 @@ export default {
   methods:{
     close(){
       this.value = false;
+    },
+    save(){
+
+    },
+    del(){
+
     }
   }
 };

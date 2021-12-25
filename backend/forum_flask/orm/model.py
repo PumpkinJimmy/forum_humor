@@ -13,16 +13,23 @@ class ModelMetaClass(type):
         pk = []
         fields = []
         default = {}
+        field_types = {}
         for attr_name, attr in cls_attrs.items():
             if issubclass(type(attr), Field):
                 attr.name = attr_name
                 fields.append(attr_name)
+                field_types[attr_name] = attr.__fieldtype__
                 if attr.primary_key:
                     pk.append(attr_name)
                 if hasattr(attr, 'default'):
                     default[attr_name] = attr.default
         cls_attrs['__fields__'] = tuple(fields)
         cls_attrs['__default__'] = default
+        cls_attrs['__model_info__'] = {
+            'pk': pk,
+            'fields': field_types,
+            'default': default
+        }
 
         # handle primary key
         if cls_name != 'Model' and not pk:
@@ -51,6 +58,10 @@ class Model(metaclass=ModelMetaClass):
     @classmethod
     def get_key_fmtstr(cls) -> str:
         return ','.join(map(lambda pk: f'{pk}={cls.get_field(pk).get_fmt()}', cls.__pk__))
+    
+    @classmethod
+    def get_model_info(cls):
+        return cls.__model_info__
 
     def __init__(self, data, **kwargs):
         '''

@@ -2,7 +2,7 @@
   <div class="crud-view elevation-2">
     <dialog-edit-object
     v-model="dialogEdit"
-    :form="form"
+    :model="model"
     :type="dialogType">
     </dialog-edit-object>
     <v-row justify="center">
@@ -109,9 +109,15 @@ export default {
           this.rows[i].idx = i;
         }
         axios
-        .get(`http://127.0.0.1:5000/api/v1/form/${this.modelName}/`)
+        .get(`http://127.0.0.1:5000/api/v1/model/${this.modelName}/`)
         .then((response) => {
-          this.model = response.data.model;
+          this.model = response.data.model_info;
+          this.headers = Object.keys(this.model.fields).map((a)=>{
+            return {
+              text: a,
+              value: a
+            }
+          })
         })
         .catch((err) => {
           console.error(err);

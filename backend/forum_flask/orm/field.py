@@ -1,6 +1,7 @@
 
 from .error import ORMError
 class Field:
+    __fieldtype__ = 'unknown'
 
     def __init__(self, *args, **kwargs):
         self.name = kwargs.get('name', self.__class__.__name__)
@@ -27,27 +28,38 @@ class Field:
     
 
 class CharField(Field):
-    pass
+    __fieldtype__ = 'char'
 
 class IntegerField(Field):
+    __fieldtype__ = 'integer'
     @classmethod
     def get_fmt(self):
         return '%s'
 
 class AutoField(Field):
-    pass
+    __fieldtype__ = 'auto'
 
 class BlobField(Field):
-    pass
+    __fieldtype__ = 'blob'
 
 class EnumField(Field):
-    pass
+    __fieldtype__ = 'enum'
 
 class DatetimeField(Field):
-    pass
+    __fieldtype__ = 'datetime'
 
 class ForeignField(Field):
-    pass
+    __fieldtype__ = 'foreign'
 
 class ManyToManyField(Field):
-    pass
+    __fieldtype__ = 'many_to_many'
+
+
+class ImageField(BlobField):
+    __fieldtype__ = 'image'
+
+class EmailField(CharField):
+    __fieldtype__ = 'email'
+
+class PasswordField(CharField):
+    __fieldtype__ = 'password'

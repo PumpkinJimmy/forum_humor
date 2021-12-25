@@ -13,9 +13,6 @@ from orm.session import DBSession
 import models
 import settings
 
-
-
-
 engine = Psycopg2Engine(**settings.database)
 
 db = ThreadedConnectionPool(1, 20, **settings.database)
@@ -49,16 +46,18 @@ def create_app():
     app.url_map.converters['key'] = KeyConverter
     app.url_map.converters['model'] = ModelConverter
 
-    @app.route('/object/<model:m>/<key:pk>/')
-    def generic_view(m, pk):
-        print(m)
-        print(pk)
-        # print(flask.url_for('generic_view', m=Tag, pk=pk))
-        return '<p>Test Works</p>'
+    
 
     @app.route('/hello/')
     def hello_forum():
         return '<p>Hello, Forum!</p>'
+    
+    @app.route('/api/v1/model/<model:model>/', methods=['GET'])
+    def get_form(model):
+        return {
+            'status': 'ok',
+            'model_info': model.get_model_info()
+        }
 
     @app.route('/api/v1/object/<model:model>/', methods=['GET'])
     def get_objects(model):

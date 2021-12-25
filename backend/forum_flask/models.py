@@ -5,10 +5,10 @@ class ForumUser(Model):
     __tablename__ = 'forum_user'
     uid = AutoField(primary_key=True)
     uname = CharField(null=False)
-    profile = BlobField()
-    email = CharField()
+    profile = ImageField()
+    email = EmailField()
     gender = EnumField()
-    password = CharField(null=False)
+    password = PasswordField(null=False)
     signature = CharField()
 
 class Post(Model):

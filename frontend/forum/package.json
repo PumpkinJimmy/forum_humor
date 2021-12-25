@@ -10,9 +10,13 @@
   "dependencies": {
     "axios": "^0.24.0",
     "core-js": "^3.6.5",
+    "stylus": "^0.56.0",
+    "stylus-loader": "^6.2.0",
     "vue": "^2.6.11",
+    "vue-datepicker": "^1.3.0",
+    "vue-material-datepicker": "^2.0.1",
     "vue-router": "^3.5.3",
-    "vuetify": "^2.4.0"
+    "vuetify": "^2.4.0",
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
