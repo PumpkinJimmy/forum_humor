@@ -3,7 +3,12 @@
     <dialog-edit-object
     v-model="dialogEdit"
     :model="model"
-    :type="dialogType">
+    :type="dialogType"
+    :obj="editItem"
+    :op="editOp"
+    @create="create"
+    @update="update"
+    @del="del">
     </dialog-edit-object>
     <v-row justify="center">
       <v-col cols="12">
@@ -55,6 +60,9 @@ export default {
       dialogEdit: false,
       dialogType: 'create',
       form: [],
+      editItem: {
+      },
+      editOp: 'create',
       default_headers: [
         {
           text: "Tag Name",
@@ -147,14 +155,19 @@ export default {
         });
         
     },
+    copyData(d){
+      return JSON.parse(JSON.stringify(d));
+    },
     onNew(){
-      this.dialogType = "create";
+      this.editItem = this.copyData(this.model.default);
+      this.editOp = 'create';
       const keys = Object.keys(this.rows[0]);
       this.form = Object.fromEntries(keys.map((k)=>[k,null]));
       this.dialogEdit = true;
     },
     onClickRow(item) {
-      this.dialogType = "edit";
+      this.editOp = 'update';
+      this.editItem = this.copyData(this.rows[item.idx]);
       this.form = this.rows[item.idx];
       this.dialogEdit = true;
     },
@@ -165,6 +178,18 @@ export default {
       
       this.getObjects(limit, offset);
     },
+    create(obj){
+      console.log('create');
+      console.log(obj);
+    },
+    update(obj){
+      console.log('update');
+      console.log(obj);
+    },
+    del(obj){
+      console.log('delete');
+      console.log(obj);
+    }
   },
   computed: {},
   watch: {

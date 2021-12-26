@@ -2,7 +2,7 @@
   <v-dialog v-model="value" max-width="500px">
     <v-card>
       <v-card-title>
-        <span class="text-h5">{{type == 'create' ? "Create Object" : "Edit Object"}}</span>
+        <span class="text-h5">{{op == 'create' ? "Create Object" : "Edit Object"}}</span>
       </v-card-title>
 
       <v-card-text>
@@ -15,22 +15,27 @@
             v-if="(ftype=='char')"
             :label="fname"
             >
+            {{obj[fname]}}
             </v-text-field>
 
             <v-text-field
             v-if="ftype=='email'"
             :label="fname"
-            :rules="[rules.email]">
+            :rules="[rules.email]"
+            v-model="obj[fname]">
+
             </v-text-field>
 
             <v-text-field
             v-if="ftype=='auto'"
-            :label="fname">
+            :label="fname"
+            v-model="obj[fname]">
             </v-text-field>
 
             <v-text-field
             v-if="ftype=='password'"
-            :label="fname">
+            :label="fname"
+            v-model="obj[fname]">
             </v-text-field>
 
             <v-select
@@ -66,7 +71,7 @@
         <v-spacer></v-spacer>
         <v-btn color="normal" text @click="close"> Cancel </v-btn>
         <v-btn color="primary" text @click="save"> Save </v-btn>
-        <v-btn color="error" text @click="del"> Delete </v-btn>
+        <v-btn v-if="op == 'update'" color="error" text @click="del"> Delete </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -76,7 +81,7 @@
 import Datepicker from 'vue-datepicker';
 export default {
   name: "DialogEditObject",
-  props: ["model", "value", "type"],
+  props: ["model", "value", "type", "obj", "op"],
   components:{
     datepicker: Datepicker
   },
@@ -112,10 +117,18 @@ export default {
       this.value = false;
     },
     save(){
-
+      if (this.op == 'create'){
+        console.log(this.obj)
+        this.$emit('create', this.obj);
+      }
+      else this.$emit('update');
+      this.value = false;
     },
     del(){
-
+      if (this.op != 'create'){
+        this.$emit('del', this.obj); 
+      }
+      this.value = false;
     }
   }
 };
