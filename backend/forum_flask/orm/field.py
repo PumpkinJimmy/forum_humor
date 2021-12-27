@@ -12,6 +12,7 @@ class Field:
             raise ORMError('null not allowed')
         self.default = kwargs.get('default', None)
         self.primary_key = kwargs.get('primary_key', False) 
+        self.label = kwargs.get('label', '')
 
     def __get__(self, instance, owner):
         if instance is not None:
@@ -21,10 +22,21 @@ class Field:
     
     def __set__(self, instance, value):
         instance._data[self.name] = value
+    
+    def get_info(self):
+        res = {
+            'type': self.__fieldtype__,
+            'label': getattr(self, 'label', self.name)
+        }
+        if hasattr(self, 'default'):
+            res['default'] = self.default
+        return res
 
     @classmethod
     def get_fmt(self):
         return '%s'
+
+    
     
 
 class CharField(Field):
@@ -44,6 +56,13 @@ class BlobField(Field):
 
 class EnumField(Field):
     __fieldtype__ = 'enum'
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.options = kwargs.get('options', ())
+    def get_info(self):
+        res = super().get_info()
+        res['options'] = self.options
+        return res
 
 class DatetimeField(Field):
     __fieldtype__ = 'datetime'

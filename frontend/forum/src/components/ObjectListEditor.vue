@@ -1,10 +1,17 @@
 <template>
   <div class="crud-view elevation-2">
+    <v-alert 
+    :type="alertType"
+    v-model="alerting"
+    dismissible
+    transition="slide-y-transition"
+    >
+    {{ alertMsg }}
+    </v-alert>
     <dialog-edit-object
     v-model="dialogEdit"
     :model="model"
-    :type="dialogType"
-    :obj="editItem"
+    :init_obj="editItem"
     :op="editOp"
     @create="create"
     @update="update"
@@ -53,16 +60,20 @@ export default {
   data() {
     return {
       rows: [],
+      uris: [],
       headers: [],
       model: {},
       serverLength: 100,
       loading: false,
       dialogEdit: false,
-      dialogType: 'create',
       form: [],
       editItem: {
       },
+      editIdx: -1,
       editOp: 'create',
+      alerting: false,
+      alertMsg: "",
+      alertType: "success",
       default_headers: [
         {
           text: "Tag Name",
@@ -112,31 +123,32 @@ export default {
       }
       axios.get(api).then((response) => {
         this.rows = response.data.objs;
-        var uris = response.data.uris;
-        for (var i = 0; i < uris.length; i++) {
-          this.rows[i].idx = i;
-        }
+        this.uris = response.data.uris;
+        
         axios
         .get(`http://127.0.0.1:5000/api/v1/model/${this.modelName}/`)
         .then((response) => {
           this.model = response.data.model_info;
-          this.headers = Object.keys(this.model.fields).map((a)=>{
-            return {
-              text: a,
-              value: a
-            }
-          })
+          this.headers = [];
+          const fields = this.model.fields;
+          fields.sort((a,b)=>(a.idx>b.idx));
+          for (var field of fields){
+            this.headers.push({
+              text: field.label,
+              value: field.name
+            })
+          }
         })
         .catch((err) => {
           console.error(err);
           this.formFailAlert = true;
-          this.model.attrs = Object.keys(this.rows[0]);
-          this.headers = this.model.attrs.map((a) => {
-            return {
-              text: a,
-              value: a,
-            };
-          });
+          // this.model.attrs = Object.keys(this.rows[0]);
+          // this.headers = this.model.attrs.map((a) => {
+          //   return {
+          //     text: a,
+          //     value: a,
+          //   };
+          // });
         });
         this.loading = false;
       });
@@ -159,16 +171,15 @@ export default {
       return JSON.parse(JSON.stringify(d));
     },
     onNew(){
+      this.editIdx = -1;
       this.editItem = this.copyData(this.model.default);
       this.editOp = 'create';
-      const keys = Object.keys(this.rows[0]);
-      this.form = Object.fromEntries(keys.map((k)=>[k,null]));
       this.dialogEdit = true;
     },
-    onClickRow(item) {
+    onClickRow(item,other) {
       this.editOp = 'update';
-      this.editItem = this.copyData(this.rows[item.idx]);
-      this.form = this.rows[item.idx];
+      this.editIdx = other.index;
+      this.editItem = this.copyData(this.rows[other.index]);
       this.dialogEdit = true;
     },
     onPaginate(options) {
@@ -178,17 +189,62 @@ export default {
       
       this.getObjects(limit, offset);
     },
+    reset(){
+      this.editIdx = -1;
+      this.editItem = {};
+    },
     create(obj){
-      console.log('create');
-      console.log(obj);
+      axios.post(`http://127.0.0.1:5000/api/v1/object/${this.modelName}/`, obj)
+        .then((response)=>{
+          console.log(`Create status: ${response.data.status}`);
+          this.alertType = "success"
+          this.alertMsg = `Create status: ${response.data.status}`
+          this.alerting = true
+          this.reset();
+          this.renderEditor();
+        })
+        .catch((err)=>{
+          this.alertType = "error"
+          this.alertMsg = err.message
+          this.alerting = true
+          this.reset()
+        })
     },
     update(obj){
-      console.log('update');
-      console.log(obj);
+      axios.put(`http://127.0.0.1:5000${this.uris[this.editIdx]}`, obj)
+          .then((response)=>{
+            console.log(`Update status: ${response.data.status}`)
+            Object.assign(this.rows[this.editIdx], obj);
+            this.uris[this.editIdx] = response.data.uri;
+            
+            this.reset();
+          })
+          .catch((err)=>{
+            console.log("Update failed")
+            this.alertType = "error"
+            this.alertMsg = err.message
+            this.alerting = true
+            this.reset();
+          })
     },
-    del(obj){
-      console.log('delete');
-      console.log(obj);
+    del(){
+      axios.delete(`http://127.0.0.1:5000${this.uris[this.editIdx]}`)
+        .then((response)=>{
+            console.log(`Delete status: ${response.data.status}`)
+            this.alertType = "success"
+            this.alertMsg = `Delete status: ${response.data.status}`
+            this.alerting = true
+            this.reset();
+            this.renderEditor();
+          })
+          .catch((err)=>{
+            console.log("Delete failed")
+            console.log(err)
+            this.alertType = "error"
+            this.alertMsg = err.message
+            this.alerting = true
+            this.reset();
+          })
     }
   },
   computed: {},

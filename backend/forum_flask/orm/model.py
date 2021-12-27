@@ -11,24 +11,27 @@ class ModelMetaClass(type):
     def __new__(cls, cls_name, cls_bases, cls_attrs):
         # collect fields and setup descriptors
         pk = []
-        fields = []
         default = {}
-        field_types = {}
-        for attr_name, attr in cls_attrs.items():
+        fields_info = []
+        fields_name = []
+        for idx, (attr_name, attr) in enumerate(cls_attrs.items()):
             if issubclass(type(attr), Field):
                 attr.name = attr_name
-                fields.append(attr_name)
-                field_types[attr_name] = attr.__fieldtype__
+                info = attr.get_info()
+                info['idx'] = idx
+                info['name'] = attr_name
+                fields_info.append(info)
+                fields_name.append(attr_name)
                 if attr.primary_key:
                     pk.append(attr_name)
                 if hasattr(attr, 'default'):
                     default[attr_name] = attr.default
-        cls_attrs['__fields__'] = tuple(fields)
+        cls_attrs['__fields__'] = tuple(fields_name)
         cls_attrs['__default__'] = default
         cls_attrs['__model_info__'] = {
             'pk': pk,
-            'fields': field_types,
-            'default': default
+            'fields': fields_info,
+            'default': default,
         }
 
         # handle primary key
