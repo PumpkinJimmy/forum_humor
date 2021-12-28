@@ -27,15 +27,11 @@
           <v-list>
             <v-subheader>Models</v-subheader>
             <v-list-item-group color="primary">
-              <!-- <v-list-item @click="route_to($event, '/object/tag')">Tag</v-list-item> -->
-              <v-list-item @click="route_to($event, '/object/user')"
-                >Forum User</v-list-item
-              >
-              <v-list-item @click="route_to($event, '/object/post')">
-                Post
-              </v-list-item>
-              <v-list-item @click="route_to($event, '/object/message')">
-                Message
+              <v-list-item
+              v-for="modelName,idx in models"
+              :key="idx"
+              @click="route_to($event, `/object/${modelName}/`)"
+              >{{modelName}}
               </v-list-item>
             </v-list-item-group>
           </v-list>
@@ -51,7 +47,7 @@
 
 <script>
 // import HelloWorld from './components/HelloWorld';
-
+import axios from 'axios'
 export default {
   name: "App",
 
@@ -60,8 +56,15 @@ export default {
   },
 
   data: () => ({
-    //
+    models: []
   }),
+
+  mounted(){
+    axios.get('http://127.0.0.1:5000/api/v1/model')
+      .then((response)=>{
+        this.models = response.data.models
+      })
+  },
 
   methods: {
     route_to(ev, loc) {

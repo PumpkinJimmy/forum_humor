@@ -17,6 +17,17 @@ engine = Psycopg2Engine(**settings.database)
 
 db = ThreadedConnectionPool(1, 20, **settings.database)
 
+registered_models = {
+    'user': models.ForumUser,
+    'post': models.Post,
+    'message': models.Message,
+    'comment': models.Comment,
+    'tag': models.Tag,
+    'tag_post': models.TagPost,
+    'tag_user': models.TagUser,
+    'tag_log': models.TagLog,
+}
+
 def create_app():
     app = Flask(__name__)
 
@@ -30,11 +41,7 @@ def create_app():
             return '/'.join(map(str, values))
     
     class ModelConverter(BaseConverter):
-        registered_models = {
-            'user': models.ForumUser,
-            'post': models.Post,
-            'message': models.Message
-        }
+        registered_models = registered_models
         def to_python(self, model_name):
             return self.registered_models[model_name]
         
@@ -52,6 +59,13 @@ def create_app():
     def hello_forum():
         return '<p>Hello, Forum!</p>'
     
+    @app.route('/api/v1/model/', methods=['GET'])
+    def get_models():
+        return {
+            'status': 'ok',
+            'models': list(registered_models.keys())
+        }
+
     @app.route('/api/v1/model/<model:model>/', methods=['GET'])
     def get_form(model):
         return {

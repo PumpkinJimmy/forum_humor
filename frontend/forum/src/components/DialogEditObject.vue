@@ -57,6 +57,7 @@
             <v-text-field
             v-if="finfo['type']=='foreign'"
             :label="finfo.label"
+            v-model="obj[finfo.name]"
             >
             </v-text-field>
 
@@ -123,6 +124,7 @@ export default {
           this.$emit('input', bool);
       },
       init_obj(obj){
+        this.obj = {};
         Object.assign(this.obj, obj);
       }
   },

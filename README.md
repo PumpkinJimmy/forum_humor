@@ -52,6 +52,9 @@ TODO
 - Backend
   - 鉴权
   - 完善CRUD支持
+    - 排序
+    - 分组
+    - 图片预览
   - 算法服务
 - Frontend
   - 应用前台

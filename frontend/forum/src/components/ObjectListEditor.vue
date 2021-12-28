@@ -112,20 +112,8 @@ export default {
     this.renderEditor();
   },
   methods: {
-    getObjects(limit, offset) {
-      if (this.serverLength == 0) return;
-      this.loading = true;
-      var api;
-      if (limit == undefined) {
-        api = `http://127.0.0.1:5000/api/v1/object/${this.modelName}/`;
-      } else {
-        api = `http://127.0.0.1:5000/api/v1/object/${this.modelName}/?offset=${offset}&limit=${limit}`;
-      }
-      axios.get(api).then((response) => {
-        this.rows = response.data.objs;
-        this.uris = response.data.uris;
-        
-        axios
+    getModelInfo(){
+      axios
         .get(`http://127.0.0.1:5000/api/v1/model/${this.modelName}/`)
         .then((response) => {
           this.model = response.data.model_info;
@@ -142,28 +130,38 @@ export default {
         .catch((err) => {
           console.error(err);
           this.formFailAlert = true;
-          // this.model.attrs = Object.keys(this.rows[0]);
-          // this.headers = this.model.attrs.map((a) => {
-          //   return {
-          //     text: a,
-          //     value: a,
-          //   };
-          // });
         });
-        this.loading = false;
+    },
+    getObjects(limit, offset) {
+      if (this.serverLength == 0) return;
+      var api;
+      if (limit == undefined) {
+        api = `http://127.0.0.1:5000/api/v1/object/${this.modelName}/`;
+      } else {
+        api = `http://127.0.0.1:5000/api/v1/object/${this.modelName}/?offset=${offset}&limit=${limit}`;
+      }
+      axios.get(api).then((response) => {
+        this.rows = response.data.objs;
+        this.uris = response.data.uris;
       });
     },
     renderEditor() {
+      this.loading = true;
       axios
         .get(
           `http://127.0.0.1:5000/api/v1/object/${this.modelName}/?count_only=true`
         )
         .then((response) => {
           this.serverLength = response.data.count;
+          this.getModelInfo();
           this.getObjects(15, 0);
+          this.loading = false;
         })
         .catch(() => {
           this.serverLength = 0;
+          this.getModelInfo();
+          this.loading = false;
+
         });
         
     },
@@ -250,6 +248,7 @@ export default {
   computed: {},
   watch: {
     modelName() {
+      this.reset();
       this.renderEditor();
     },
   },
