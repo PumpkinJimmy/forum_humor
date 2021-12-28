@@ -13,17 +13,17 @@ CREATE TABLE forum_group
 (
         gid serial PRIMARY KEY,
         gname VARCHAR(20) NOT NULL,
-        admin_uid CHAR(20),
-        constraint G_auid_FU foreign key(admin_uid) references forum_user(uid);
+        admin_uid CHAR(20) not null,
+        constraint G_auid_FU foreign key(admin_uid) references forum_user(uid)
 );
 
 CREATE TABLE group_member
 (
         gid CHAR(20),
         member_uid CHAR(20),
-        constraint PK_FGM primary key(gid, member_uid);
-        constraint G_muid_FU foreign key(member_uid) references forum_user(uid)
-        constraint G_gid_FG foreign key(gid) references ForumGroup(gid)
+        constraint PK_FGM primary key(gid, member_uid),
+        constraint G_muid_FU foreign key(member_uid) references forum_user(uid),
+        constraint G_gid_FG foreign key(gid) references forum_group(gid)
 );
 
 CREATE TABLE message
@@ -56,15 +56,15 @@ CREATE TABLE comment
         like_num INTEGER,
         content VARCHAR(200),
         commenter_uid CHAR(20),
-        from_pid CHAR(20),
-        constraint C_cuid_FU foreign key(commenter_uid) references ForumUser(uid),
-        constraint C_fpid_P foreign key(from_pid) references Post(pid)
+        from_pid CHAR(20) not null,
+        constraint C_cuid_FU foreign key(commenter_uid) references forum_user(uid),
+        constraint C_fpid_P foreign key(from_pid) references post(pid)
 );
 
 CREATE TABLE tag
 (
         tname VARCHAR(20) PRIMARY KEY,
-        hot_value INTEGER CHECK(hot_value>0)
+        hot_value INTEGER CHECK(hot_value>0) default 0
 );
 
 CREATE TABLE tag_post
@@ -72,8 +72,8 @@ CREATE TABLE tag_post
         tname VARCHAR(20) NOT NULL,
         pid CHAR(20) NOT NULL,
         PRIMARY KEY (tname, pid),
-        constraint TP_tname_T foreign key(tname) references Tag(tname),
-        constraint TP_pid_P foreign key(pid) references Post(pid)
+        constraint TP_tname_T foreign key(tname) references tag(tname),
+        constraint TP_pid_P foreign key(pid) references post(pid)
 );
 
 CREATE TABLE tag_user
@@ -82,7 +82,7 @@ CREATE TABLE tag_user
         uid CHAR(20) NOT NULL,
         PRIMARY KEY (tname, uid),
         constraint TU_tname_T foreign key(tname) references Tag(tname),
-        constraint TU_uid_FU foreign key(uid) references ForumUser(uid)
+        constraint TU_uid_FU foreign key(uid) references forum_user(uid)
 );
 
 CREATE TABLE tag_log
@@ -91,6 +91,6 @@ CREATE TABLE tag_log
         uid CHAR(20) NOT NULL,
         access_time DATE NOT NULL,
         PRIMARY KEY (tname, uid, access_time),
-        constraint Tl_tname_T foreign key(tname) references Tag(tname),
-        constraint Tl_uid_FU foreign key(uid) references ForumUser(uid)
+        constraint Tl_tname_T foreign key(tname) references tag(tname),
+        constraint Tl_uid_FU foreign key(uid) references forum_user(uid)
 );
