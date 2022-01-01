@@ -2,7 +2,7 @@ import psycopg2
 from psycopg2.pool import ThreadedConnectionPool
 
 from .error import ORMError
-from .queryset import QuerySet
+from .queryset import Query
 from .model import Model, ModelMetaClass
 
 class Engine:
@@ -28,6 +28,58 @@ class Engine:
         return NotImplemented()
 
 class Psycopg2Engine(Engine):
+    
+    @staticmethod
+    def query2sql(query):
+        '''
+        required:
+            - method
+            - tablename
+        optional:
+            - condition
+            - agg
+            - orderby
+            - orderby_desc
+            - limit
+            - offset
+        '''
+        if query['method'] == 'select':
+            tpl = 'select {agg_str} from {tablename}'
+
+            agg = query.get('agg')
+            if agg is not None:
+                agg_str = f'{agg}(*)'
+            else:
+                agg_str = '*'
+            tpl = tpl.format(
+                tablename=query['tablename'],
+                agg_str=agg_str
+            )
+
+            condition = query.get('condition')
+
+            if condition:
+                'FIXME: not general'
+                tpl += f' where {condition}'
+
+            orderby = query.get('orderby')
+            desc = query.get('orderby_desc')
+            if orderby:
+                tpl += f' order by {orderby} {"desc" if desc else "asc"}'
+
+            limit = query.get('limit')
+            if limit:
+                tpl += f' limit {limit}'
+
+            offset = query.get('offset')
+            if offset:
+                tpl += f' offset {offset}'
+            print(query)
+            print(tpl)
+            return tpl, query.get('condition_value', ())
+        else:
+            raise NotImplemented()
+
     def __init__(self, **conf):
         self.minconn = conf.get('minconn', 1)
         self.maxconn = conf.get('maxconn', 8)
@@ -46,26 +98,38 @@ class Psycopg2Engine(Engine):
     def putconn(self, conn):
         self.pool.putconn(conn)
     
-    def select(self, conn, model: Model, *args, **kwargs):
-        curs = conn.cursor()
-        pk = kwargs.get('pk', None)
-        if pk is None:
-            limit = kwargs.get('limit')
-            offset = kwargs.get('offset', 0)
-            if limit is not None:
-                curs.execute(f'select * from {model.__tablename__} limit {limit} offset {offset}')
-            else:
-                curs.execute(f'select * from {model.__tablename__}')
-        else:
+    def select(self, conn, model: Model, **query):
+        pk = query.get('pk', None)
+        if pk:
             if type(pk) != list and type(pk) != tuple:
                 pk = (pk, )
             pk_query_str = ' and '.join(map(
                 lambda a: f'{a}={model.get_field(a).get_fmt()}', 
                 model.__pk__))
-            print(f'Auto construct SQL: select * from {model.__tablename__} where {pk_query_str}')
-            curs.execute(f'select * from {model.__tablename__} where {pk_query_str}', pk)
-        res = curs.fetchall()
-        return QuerySet(map(model.from_tuple, res))
+            query['condition'] = pk_query_str
+            query['condition_value'] = pk
+        query['method'] = 'select'
+        query['tablename'] = model.__tablename__
+        return Query(self, query, model)
+        # curs = conn.cursor()
+        # pk = kwargs.get('pk', None)
+        # if pk is None:
+        #     limit = kwargs.get('limit')
+        #     offset = kwargs.get('offset', 0)
+        #     if limit is not None:
+        #         curs.execute(f'select * from {model.__tablename__} limit {limit} offset {offset}')
+        #     else:
+        #         curs.execute(f'select * from {model.__tablename__}')
+        # else:
+        #     if type(pk) != list and type(pk) != tuple:
+        #         pk = (pk, )
+        #     pk_query_str = ' and '.join(map(
+        #         lambda a: f'{a}={model.get_field(a).get_fmt()}', 
+        #         model.__pk__))
+        #     print(f'Auto construct SQL: select * from {model.__tablename__} where {pk_query_str}')
+        #     curs.execute(f'select * from {model.__tablename__} where {pk_query_str}', pk)
+        # res = curs.fetchall()
+        # return QuerySet(map(model.from_tuple, res))
     
     def insert(self, conn, obj: Model, *args, **kwargs):
         model = type(obj)

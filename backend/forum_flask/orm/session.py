@@ -1,7 +1,7 @@
 from .model import Model
 from .engine import Engine
 from typing import List, Dict, Tuple
-from .queryset import QuerySet
+from .queryset import Query
         
 
 class DBSession:
@@ -16,7 +16,7 @@ class DBSession:
     def get_raw_conn(self):
         return self.conn
     
-    def select(self, *args, **kwargs) -> QuerySet:
+    def select(self, *args, **kwargs):
         return self.engine.select(self.conn, *args, **kwargs)
             
     

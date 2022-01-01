@@ -78,22 +78,23 @@ def create_app():
         session = DBSession(engine)
         if request.args.get('count_only', 'false') == 'true':
             # Todo: engine support aggregation
-            conn = session.get_raw_conn()
-            curs = conn.cursor()
-            curs.execute(f'select count(*) from {model.__tablename__}')
-            res = curs.fetchall()[0]
+            # conn = session.get_raw_conn()
+            # curs = conn.cursor()
+            # curs.execute(f'select count(*) from {model.__tablename__}')
+            # res = curs.fetchall()[0]
+            res = session.select(model, agg='count').all()
             return {
                 'status': 'ok',
                 'objs': [],
                 'uris': [],
-                'count': int(res[0])
+                'count': int(res)
             }
         offset = request.args.get('offset', 0)
         limit = request.args.get('limit')
         
         
 
-        if limit is None:
+        if limit is None and offset == 0:
             res = session.select(model)
         else:
             try:

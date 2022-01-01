@@ -27,11 +27,11 @@ Features:
   - 基于Transformer的语言情感分类
   
 - Frontend
-  - 基于Vue的前后端分离界面
-  - 基于Vue & Vue Router的单页后台管理应用
-  - 基于Vuetify的Material Design界面
-  - 基于Vuetify的响应式跨端界面
-  - 基于后端Model元信息的通用动态表单
+  - 基于Vue & Vue Router & Vuetify的单页后台管理框架应用
+    - 基于Vue的前后端分离界面
+    - 基于Vue Router的单页应用路由
+    - 基于Vuetify的Material Design响应式跨端界面
+    - 基于后端Model元信息的通用动态表单
   - 表单组件
     - 头像选择预览组件
     - 日历式日期选择组件
