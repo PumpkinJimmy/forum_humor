@@ -63,6 +63,7 @@ class Query:
 
     
     def to_json(self):
-        return list(map(lambda t: self.model.from_tuple(t).to_json(), self.all()))
+        self.all()
+        return list(map(lambda t: self.model.from_tuple(t).to_json(), self.__data))
     
     

@@ -48,7 +48,21 @@ Features:
   - 数据导入：基于CSV的大量测试数据导入
   - 基于触发器的点击日志
 
-TODO
+Dependencies:
+- Python3.7
+  - flask
+  - flask-CORS
+  - pytorch>=1.8
+  - gensim
+  - numpy
+
+- frontent
+  - Vue
+  - Vue CLI
+  - Vue Router
+  - Vuetify
+
+TODO:
 - Backend
   - 鉴权
   - 完善CRUD支持

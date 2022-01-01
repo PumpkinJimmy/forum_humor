@@ -13,9 +13,13 @@ from orm.session import DBSession
 import models
 import settings
 
+from ml.classification import EmotionClassifier
+
 engine = Psycopg2Engine(**settings.database)
 
 db = ThreadedConnectionPool(1, 20, **settings.database)
+
+classifier = EmotionClassifier('./ml/model/doc2vec.model', './ml/model/net_state_dict.pth')
 
 registered_models = {
     'user': models.ForumUser,
@@ -192,12 +196,15 @@ def create_app():
                 'status': 'ok'
             }
     
-    @app.route('/api/v1/form/<model:model>/', methods=['GET'])
-    def get_for_listview(model):
-        raise NotImplemented()
+    @app.route('/api/v1/ml/infer_all/', methods=['GET'])
+    def infer_all():
+        session = DBSession(engine)
+        posts = session.select(models.Post, condition='content is not null', limit=10).to_json()
+        sentences = list(map(lambda d: d['content'], posts))
+        res = [classifier.infer_emotion(sentence) for sentence in sentences]
         return {
             'status': 'ok',
-            'layout': model.__fields__
+            'res': res
         }
 
     return app
