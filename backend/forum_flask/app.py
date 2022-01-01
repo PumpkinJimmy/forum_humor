@@ -42,6 +42,8 @@ def create_app():
         def to_python(self, value):
             return tuple(value.strip('/').split('/'))
         def to_url(self, values):
+            if type(values) not in (list, tuple):
+                return str(values)
             return '/'.join(map(str, values))
     
     class ModelConverter(BaseConverter):
