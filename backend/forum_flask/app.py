@@ -89,28 +89,34 @@ def create_app():
                 'uris': [],
                 'count': int(res)
             }
-        offset = request.args.get('offset', 0)
-        limit = request.args.get('limit')
-        
-        
 
-        if limit is None and offset == 0:
-            res = session.select(model)
-        else:
-            try:
-                limit = int(limit)
-                offset = int(offset)
-                assert limit >= 0
-                assert offset  >= 0
-            except:
-                return {
-                    'status': 'fail',
-                    'objs': [],
-                    'uris': [],
-                    'message': 'invalid pagination info'
-                }
-            else:
-                res = session.select(model, limit=limit, offset=offset)
+        # ================================
+        # FIXME: SQL Injection risk
+        # ================================
+        offset = request.args.get('offset')
+        limit = request.args.get('limit')
+        orderby = request.args.get('orderby')
+        desc = True if request.args.get('desc') == 'true' else False
+        
+        res = session.select(model, limit=limit, offset=offset, orderby=orderby, orderby_desc=desc)
+
+        # if limit is None and offset == 0:
+        #     res = session.select(model)
+        # else:
+        #     try:
+        #         limit = int(limit)
+        #         offset = int(offset)
+        #         assert limit >= 0
+        #         assert offset  >= 0
+        #     except:
+        #         return {
+        #             'status': 'fail',
+        #             'objs': [],
+        #             'uris': [],
+        #             'message': 'invalid pagination info'
+        #         }
+        #     else:
+        #         res = session.select(model, limit=limit, offset=offset)
 
         uris = [
             url_for('get_object', model=model, pk=tuple(obj.get_key().values())) 
