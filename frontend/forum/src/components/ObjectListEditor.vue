@@ -132,13 +132,19 @@ export default {
           this.formFailAlert = true;
         });
     },
-    getObjects(limit, offset) {
+    getObjects(limit, offset, orderby, desc) {
       if (this.serverLength == 0) return;
       var api;
       if (limit == undefined) {
-        api = `http://127.0.0.1:5000/api/v1/object/${this.modelName}/`;
+        api = `http://127.0.0.1:5000/api/v1/object/${this.modelName}/?`;
       } else {
         api = `http://127.0.0.1:5000/api/v1/object/${this.modelName}/?offset=${offset}&limit=${limit}`;
+      }
+      if (orderby){
+        api += `&orderby=${orderby}`
+      }
+      if (desc){
+        api += `&desc=true`
       }
       axios.get(api).then((response) => {
         this.rows = response.data.objs;
@@ -181,11 +187,12 @@ export default {
       this.dialogEdit = true;
     },
     onPaginate(options) {
-      const { page, itemsPerPage } = options;
+      const { page, itemsPerPage, sortBy,sortDesc } = options;
+      console.log(options);
       const offset = itemsPerPage * (page - 1);
       const limit = itemsPerPage;
       
-      this.getObjects(limit, offset);
+      this.getObjects(limit, offset, sortBy[0], sortDesc[0]);
     },
     reset(){
       this.editIdx = -1;

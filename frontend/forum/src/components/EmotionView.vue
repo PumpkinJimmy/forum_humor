@@ -16,19 +16,23 @@ export default {
     mounted(){
         axios.get('http://127.0.0.1:5000/api/v1/ml/infer_all/')
             .then((resp)=>{
+                
                 var rows = resp.data.res;
-                var row = rows[0];
+                this.rows = rows;
+                var row = rows[2];
+                var s = 0;
                 for (var i in row){
-                    if (row[i] < 0){
-                        delete row[i]
-                    }
+                    row[i] = Math.exp(row[i]);
+                    s += row[i];
                 }
+                for (i in row){
+                    row[i] /= s;
+                }
+                console.log(row);
                 var pie = d3.pie()
                 var color = d3.schemeCategory10;
                 var dat = Object.values(row);
-                //var maxv = Math.max(...dat), minv = Math.min(...dat);
-                // dat = dat.map(x=>(x-minv)/(maxv-minv));
-                console.log(JSON.stringify(dat))
+
                 var piedata = pie(dat)
                 var arc = d3.arc()
                     .innerRadius(0)
@@ -45,11 +49,20 @@ export default {
                  .append('path')
                  .attr('fill', (d,i)=>color[i])
                  .attr('d', d=>arc(d))
+                 .transition()
+                 .duration(750)
+                 .ease(d3.easeLinear)
+                 .attrTween('d', (d)=>{
+                     let it = d3.interpolate(d.startAngle,d.endAngle);
+                     return function(t){
+                         d.endAngle= it(t);
+                         return arc(d);
+                     }
+                 })
                 arcs
                  .append('text')
                  .text((_,i)=>{
                      var label = Object.keys(row)[i];
-                     console.log(label)
                      return label})
                  .attr('transform', (d)=>{
                      var pos = arc.centroid(d);
@@ -57,7 +70,7 @@ export default {
                  })
                  .attr("text-anchor","middle")
                  .attr('font-size', '7px')
-                 
+                
             })
     }
 }

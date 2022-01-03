@@ -53,17 +53,19 @@ class Query:
             curs = conn.cursor()
             statement, value = self.engine.query2sql(self.query)
             curs.execute(statement, *value)
-            self.__data = curs.fetchall()
+            data = curs.fetchall()
             self.engine.putconn(conn)
             self.query_applied = True
             if self.query.get('agg'):
+                self.__data = data
                 return self.__data[0][0]
             else:
-                return list(map(self.model.from_tuple, self.__data))
+                self.__data = list(map(self.model.from_tuple, data))
+                return self.__data
 
     
     def to_json(self):
         self.all()
-        return list(map(lambda t: self.model.from_tuple(t).to_json(), self.__data))
+        return list(map(lambda m: m.to_json(), self.__data))
     
     
