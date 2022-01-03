@@ -11,8 +11,9 @@ Features:
   - 基于`psycopg2`的线程池与会话语义
   - Python实现的简易ORM
     - 支持`select, insert, update, delete`操作
+    - 支持条件查询、排序、分页
   - 基于Python元类的ORM Model API
-    - 对接存储模型和业余语义的`Model & Field`接口
+    - 对接存储模型和业务语义的`Model & Field`接口
     - 支持`Field`:
       - `AutoField`
       - `CharField`
@@ -25,6 +26,7 @@ Features:
       - `ImageField`
   - RESTful通用对象访问接口
   - 基于Transformer的语言情感分类
+  - 基于Numpy的窗口式热度统计
   
 - Frontend
   - 基于Vue & Vue Router & Vuetify的单页后台管理框架应用
@@ -68,15 +70,35 @@ Dependencies:
   - Vuetify
   - axios
 
-TODO:
+剩余目标特性:
+- Database
+  - 触发器实现日志
 - Backend
-  - 鉴权
-  - 完善CRUD支持
-    - 排序 ok
-    - 分组
-    - 图片预览
-  - 算法服务 partial
+  - 基础登录
+  - 用户帖子聚合（为了情感分析）
+  - Tag内容聚合
+  - 完整的情感分析支持
+  - 点击记录
+  - 热度统计
+  
 - Frontend
-  - 应用前台
-  - 算法可视化
+  - 头像显示
+  - 帖子界面
+  - 登录界面
+  - 发帖操作
+  - Tag内容聚合页面
+  - 情感可视化（饼状图和自动人物标签）
+  - 热度可视化（曲线图）
+
+
+日后再谈：
 - 应用部署
+- Redis加速
+- Websocket聊天功能
+- 评论功能
+- 鉴权
+- 加盐哈希密码存储
+- Flink流统计
+- 社交图推荐
+- 分布式集群
+- CDN
