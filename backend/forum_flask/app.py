@@ -14,6 +14,7 @@ import models
 import settings
 
 from ml.classification import EmotionClassifier
+from json_encoder import CustomJSONEncoder
 
 engine = Psycopg2Engine(**settings.database)
 
@@ -36,6 +37,8 @@ def create_app():
     app = Flask(__name__)
 
     CORS(app, supports_credentials=True)
+
+    app.json_encoder = CustomJSONEncoder
 
     class KeyConverter(BaseConverter):
         regex = r'[\w\W]+'
@@ -175,6 +178,7 @@ def create_app():
         '''
         session = DBSession(engine)
         new_obj = model(request.get_json())
+        print(request.get_json())
         try:
             session.update(new_obj, pk=pk)
             session.commit()

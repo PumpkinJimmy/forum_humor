@@ -23,7 +23,7 @@ class Post(Model):
     pid = AutoField(primary_key=True,label="PID")
     hot_value = IntegerField(label="Hot Value")
     title = CharField(label="Title")
-    content = CharField(label="Content")
+    content = TextField(label="Content")
     post_time = DatetimeField(label="Post Time")
     last_modified_time = DatetimeField(label="Last Modified")
     poster_uid = ForeignField(ForumUser, label="Poster UID")
@@ -35,14 +35,14 @@ class Message(Model):
     time_stamp = DatetimeField(label="Timestamp")
     from_uid = ForeignField(ForumUser,label="From UID")
     to_uid = ForeignField(ForumUser,label="To UID")
-    content = CharField(label="Content")
+    content = TextField(label="Content")
 
 class Comment(Model):
     __tablename__ = 'comment'
     cid = AutoField(primary_key=True,label="CID")
     ctime = DatetimeField(label="Comment Time")
     like_num = IntegerField(label="Like Number")
-    content = CharField(label="Content")
+    content = TextField(label="Content")
     commenter_uid = ForeignField(ForumUser, label="Commenter ID")
     from_pid = ForeignField(Post, label="Reply Post ID")
 

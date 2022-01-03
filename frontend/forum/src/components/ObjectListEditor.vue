@@ -188,7 +188,6 @@ export default {
     },
     onPaginate(options) {
       const { page, itemsPerPage, sortBy,sortDesc } = options;
-      console.log(options);
       const offset = itemsPerPage * (page - 1);
       const limit = itemsPerPage;
       

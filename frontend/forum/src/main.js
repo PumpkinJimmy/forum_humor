@@ -5,6 +5,8 @@ import routes from './router.config.js'
 import vuetify from './plugins/vuetify'
 import Datepicker from 'vue-material-datepicker';
 
+
+
 Vue.use(Datepicker);
 
 Vue.config.productionTip = false

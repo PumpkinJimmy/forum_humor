@@ -49,27 +49,33 @@ Features:
   - 基于触发器的点击日志
 
 Dependencies:
+- Database
+  - openGauss
+
 - Python3.7
+  - psycopg2
   - flask
   - flask-CORS
+  - numpy
   - pytorch>=1.8
   - gensim
-  - numpy
+  
 
 - frontent
   - Vue
   - Vue CLI
   - Vue Router
   - Vuetify
+  - axios
 
 TODO:
 - Backend
   - 鉴权
   - 完善CRUD支持
-    - 排序
+    - 排序 ok
     - 分组
     - 图片预览
-  - 算法服务
+  - 算法服务 partial
 - Frontend
   - 应用前台
   - 算法可视化

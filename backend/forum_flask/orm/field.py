@@ -66,6 +66,9 @@ class EnumField(Field):
 
 class DatetimeField(Field):
     __fieldtype__ = 'datetime'
+    @classmethod
+    def get_fmt(lcs):
+        return 'to_timestamp(%s)'
 
 class ForeignField(Field):
     __fieldtype__ = 'foreign'
@@ -82,3 +85,6 @@ class EmailField(CharField):
 
 class PasswordField(CharField):
     __fieldtype__ = 'password'
+
+class TextField(Field):
+    __fieldtype__ = 'text'
