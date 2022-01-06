@@ -6,6 +6,7 @@ class Field:
     def __init__(self, *args, **kwargs):
         self.name = kwargs.get('name', self.__class__.__name__)
         self.allow_null = kwargs.get('null', True)
+        self.model = None
         if self.allow_null == False \
             and 'default' in kwargs \
                 and kwargs['default'] is None:
@@ -35,7 +36,12 @@ class Field:
     @classmethod
     def get_fmt(self):
         return '%s'
-
+    
+    def __eq__(self, other):
+        if issubclass(type(other), Field):
+            return f'{self.name} = {other.name}'
+        else:
+            return f'{self.name} = {other}'
     
     
 

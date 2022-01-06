@@ -42,6 +42,7 @@ class Psycopg2Engine(Engine):
             - orderby_desc
             - limit
             - offset
+            - join
         '''
         if query['method'] == 'select':
             tpl = 'select {agg_str} from {tablename}'
@@ -51,8 +52,15 @@ class Psycopg2Engine(Engine):
                 agg_str = f'{agg}(*)'
             else:
                 agg_str = '*'
+            join = query.get('join')
+            if join:
+                table1 = query['tablename']
+                table2 = join['join_model'].__tablename__
+                tablename = f"{table1} join {table2} on {table1}.{join['field1']} = {table2}.{join['field2']}"
+            else:
+                tablename = query['tablename']
             tpl = tpl.format(
-                tablename=query['tablename'],
+                tablename=tablename,
                 agg_str=agg_str
             )
 

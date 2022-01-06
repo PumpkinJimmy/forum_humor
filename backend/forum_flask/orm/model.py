@@ -17,6 +17,7 @@ class ModelMetaClass(type):
         for idx, (attr_name, attr) in enumerate(cls_attrs.items()):
             if issubclass(type(attr), Field):
                 attr.name = attr_name
+                
                 info = attr.get_info()
                 info['idx'] = idx
                 info['name'] = attr_name
@@ -42,7 +43,11 @@ class ModelMetaClass(type):
         # set table name
         cls_attrs.setdefault('__tablename__', cls_name)
 
-        return super().__new__(cls, cls_name, cls_bases, cls_attrs)
+        model = super().__new__(cls, cls_name, cls_bases, cls_attrs)
+        for attr in cls_attrs.values():
+            if issubclass(type(attr), Field):
+                attr.model = model
+        return model
 
 class Model(metaclass=ModelMetaClass):
     @classmethod

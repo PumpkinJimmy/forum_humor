@@ -212,6 +212,46 @@ def create_app():
             'status': 'ok',
             'res': res
         }
+    
+    @app.route('/api/v1/ml/infer_user/<string:uid>/', methods=['GET'])
+    def infer_user(uid):
+        from models import ForumUser, Post
+        session = DBSession(engine)
+        qs = session.select(ForumUser,
+            join={
+                'join_model': Post,
+                'field1': 'uid',
+                'field2': 'poster_uid'
+            },
+            condition=ForumUser.uid==uid
+            )
+        rows, fields = qs.all_raw()
+        if not rows:
+            return {'status': 'no available text'}
+        content_idx = fields.index('content')
+        res = [classifier.infer_emotion(row[content_idx]) for row in rows]
+        return {
+            'status': 'ok',
+            'res': res
+        }
+    
+    @app.route('/api/v1/query/user_posts/<key:pk>/')
+    def query_join(pk):
+        from models import ForumUser, Post
+        session = DBSession(engine)
+        qs = session.select(ForumUser,
+            join={
+                'join_model': Post,
+                'field1': 'uid',
+                'field2': 'poster_uid'
+            },
+            condition=ForumUser.uid==pk[0]
+            )
+        print(engine.query2sql(qs.query))
+        return {
+            'data': qs.all_raw(),
+            'status': 'ok'
+        }
 
     return app
 
