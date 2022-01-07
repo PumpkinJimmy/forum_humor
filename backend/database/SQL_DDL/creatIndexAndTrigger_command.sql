@@ -1,5 +1,5 @@
-CREATE INDEX ForumUser_email_index ON ForumUser (email);
-CREATE INDEX ForumUser_gender_index ON ForumUser (gender);
+CREATE INDEX ForumUser_email_index ON forum_user (email);
+CREATE INDEX ForumUser_gender_index ON forum_user (gender);
 
 CREATE INDEX ForumGroup_admin_uid_index ON ForumGroup (admin_uid);
 
@@ -37,11 +37,11 @@ END
 $$ LANGUAGE PLPGSQL;
 
 CREATE TRIGGER InsertTU
-AFTER INSERT OR UPDATE ON TagofUser
+AFTER INSERT OR UPDATE ON tag_user
 FOR EACH ROW
 EXECUTE PROCEDURE tri_insertTU_func();
 
 CREATE TRIGGER InsertTP
-AFTER INSERT OR UPDATE ON TagofPost
+AFTER INSERT OR UPDATE ON tag_post
 FOR EACH ROW
 EXECUTE PROCEDURE tri_insertTP_func();

@@ -174,7 +174,7 @@ class Psycopg2Engine(Engine):
             pk_val = kwargs['pk']
         if 'new' in kwargs:
             new = kwargs['newl']
-        fmt_where_str = ','.join(map(lambda pk: f'{pk}={model.get_field(pk).get_fmt()}', model.__pk__))
+        fmt_where_str = ' and '.join(map(lambda pk: f'{pk}={model.get_field(pk).get_fmt()}', model.__pk__))
         fmt_new_str = ','.join(map(lambda k: f'{k}={model.get_field(k).get_fmt()}', new.keys()))
         print(f'update {model.__tablename__} set {fmt_new_str} where {fmt_where_str}')
         print(tuple(new.values()) + tuple(pk_val))
