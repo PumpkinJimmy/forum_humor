@@ -66,3 +66,9 @@ class TagUser(Model):
     __tablename__ = 'tag_user'
     tname = ForeignField(Tag,primary_key=True)
     uid = ForeignField(ForumUser,primary_key=True)
+
+class TagLog(Model):
+    __tablename__ = 'tag_log'
+    tname = ForeignField(Tag, primary_key=True)
+    uid = ForeignField(ForumUser, primary_key=True)
+    access_time = DatetimeField(primary_key=True)

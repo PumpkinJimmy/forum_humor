@@ -119,25 +119,6 @@ class Psycopg2Engine(Engine):
         query['method'] = 'select'
         query['tablename'] = model.__tablename__
         return Query(self, query, model)
-        # curs = conn.cursor()
-        # pk = kwargs.get('pk', None)
-        # if pk is None:
-        #     limit = kwargs.get('limit')
-        #     offset = kwargs.get('offset', 0)
-        #     if limit is not None:
-        #         curs.execute(f'select * from {model.__tablename__} limit {limit} offset {offset}')
-        #     else:
-        #         curs.execute(f'select * from {model.__tablename__}')
-        # else:
-        #     if type(pk) != list and type(pk) != tuple:
-        #         pk = (pk, )
-        #     pk_query_str = ' and '.join(map(
-        #         lambda a: f'{a}={model.get_field(a).get_fmt()}', 
-        #         model.__pk__))
-        #     print(f'Auto construct SQL: select * from {model.__tablename__} where {pk_query_str}')
-        #     curs.execute(f'select * from {model.__tablename__} where {pk_query_str}', pk)
-        # res = curs.fetchall()
-        # return QuerySet(map(model.from_tuple, res))
     
     def insert(self, conn, obj: Model, *args, **kwargs):
         model = type(obj)
@@ -182,3 +163,8 @@ class Psycopg2Engine(Engine):
             f'update {model.__tablename__} set {fmt_new_str} where {fmt_where_str}', 
             tuple(new.values()) + tuple(pk_val)
             )
+    
+    def raw(self, conn, statement, value=()):
+        curs = conn.cursor()
+        curs.execute(statement,value)
+        return curs.fetchall()

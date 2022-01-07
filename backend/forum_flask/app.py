@@ -15,6 +15,7 @@ import settings
 
 from ml.classification import EmotionClassifier
 from json_encoder import CustomJSONEncoder
+import datetime
 
 engine = Psycopg2Engine(**settings.database)
 
@@ -250,6 +251,38 @@ def create_app():
         print(engine.query2sql(qs.query))
         return {
             'data': qs.all_raw(),
+            'status': 'ok'
+        }
+
+    @app.route('/api/v1/query/tag_access/', methods=['GET'])
+    def query_tags_access():
+        session = DBSession(engine)
+        return {
+            'status':'ok',
+            'res': session.raw('select * from tag_access_count')
+        }
+
+    @app.route('/api/v1/query/tag_access/<string:tname>/', methods=['GET'])
+    def query_tag_access(tname):
+        session = DBSession(engine)
+        return {
+            'status':'ok',
+            'res': session.raw(f'select count from tag_access_count where tname=%s', (tname,))[0][0]
+        }
+    
+    @app.route('/api/v1/log/tag_access/', methods=['GET'])
+    def log_tag_access():
+        tname = request.args['tname']
+        uid = request.args['uid']
+        log = models.TagLog({
+            'tname': tname,
+            'uid': uid,
+            'access_time': datetime.datetime.now().timestamp()
+        })
+        session = DBSession(engine)
+        session.insert(log)
+        session.commit()
+        return {
             'status': 'ok'
         }
 

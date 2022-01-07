@@ -34,3 +34,6 @@ class DBSession:
 
     def rollback(self):
         self.conn.rollback()
+    
+    def raw(self, *args, **kwargs):
+        return self.engine.raw(self.conn, *args, **kwargs)
