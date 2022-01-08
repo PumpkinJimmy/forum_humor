@@ -7,7 +7,7 @@
           <v-card-text>
               Current login: {{ login_user }}
             <v-text-field label="Username" v-model="username"></v-text-field>
-            <v-text-field label="Password" v-model="password"></v-text-field>
+            <v-text-field label="Password" v-model="password" type="password"></v-text-field>
           </v-card-text>
           <v-card-actions class="pt-0">
 
