@@ -1,4 +1,5 @@
 from flask import Flask, request, g
+from flask import session
 import flask
 from flask.helpers import url_for
 from flask_cors import CORS
@@ -16,6 +17,7 @@ import settings
 from ml.classification import EmotionClassifier
 from json_encoder import CustomJSONEncoder
 import datetime
+import os
 
 engine = Psycopg2Engine(**settings.database)
 
@@ -62,6 +64,7 @@ def create_app():
     
     app.url_map.converters['key'] = KeyConverter
     app.url_map.converters['model'] = ModelConverter
+    app.secret_key = os.urandom(64)
 
     
 
@@ -285,6 +288,34 @@ def create_app():
         return {
             'status': 'ok'
         }
+    
+    
+
+    @app.route('/api/v1/auth/login_status/')
+    def index():
+        if 'username' in session:
+            return {
+                'status': 'ok',
+                'username': session['username']
+            }
+        return {
+            'status': 'no login'
+        }
+
+    @app.route('/api/v1/auth/login/', methods=['POST'])
+    def login():
+        data = request.get_json()
+        session['username'] = data['username']
+        return {
+            'status': 'ok',
+            'username': session['username']
+        }
+
+    # @app.route('/logout')
+    # def logout():
+    #     # remove the username from the session if it's there
+    #     session.pop('username', None)
+    #     return redirect(url_for('index'))
 
     return app
 
