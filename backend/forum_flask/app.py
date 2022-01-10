@@ -90,11 +90,6 @@ def create_app():
     def get_objects(model):
         session = DBSession(engine)
         if request.args.get('count_only', 'false') == 'true':
-            # Todo: engine support aggregation
-            # conn = session.get_raw_conn()
-            # curs = conn.cursor()
-            # curs.execute(f'select count(*) from {model.__tablename__}')
-            # res = curs.fetchall()[0]
             res = session.select(model, agg='count').all()
             return {
                 'status': 'ok',
@@ -112,24 +107,6 @@ def create_app():
         desc = True if request.args.get('desc') == 'true' else False
         
         res = session.select(model, limit=limit, offset=offset, orderby=orderby, orderby_desc=desc)
-
-        # if limit is None and offset == 0:
-        #     res = session.select(model)
-        # else:
-        #     try:
-        #         limit = int(limit)
-        #         offset = int(offset)
-        #         assert limit >= 0
-        #         assert offset  >= 0
-        #     except:
-        #         return {
-        #             'status': 'fail',
-        #             'objs': [],
-        #             'uris': [],
-        #             'message': 'invalid pagination info'
-        #         }
-        #     else:
-        #         res = session.select(model, limit=limit, offset=offset)
 
         uris = [
             url_for('get_object', model=model, pk=tuple(obj.get_key().values())) 
@@ -150,7 +127,7 @@ def create_app():
         return {
             'status': 'ok',
             'obj': res.one().to_json(),
-            'uri': url_for('get_object', model=model, pk=res.one().get_key().values())
+            'uri': url_for('get_object', model=model, pk=tuple(res.one().get_key().values())[0])
         }
         
     @app.route('/api/v1/object/<model:model>/', methods=['POST'])

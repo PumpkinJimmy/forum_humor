@@ -43,7 +43,8 @@ class Query:
         if self.query_applied:
             return self.__data[0]
         else:
-            raise NotImplemented()
+            self.all()
+            return self.__data[0]
     
     def all(self) -> List[Model]:
         if self.query_applied:
