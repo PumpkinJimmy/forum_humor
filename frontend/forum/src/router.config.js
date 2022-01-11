@@ -15,7 +15,7 @@ const routes = [
     {path: '/userposts/', component: UserPostViewer},
     {path: '/tags/', component: TagViewer},
     {path: '/login/', component: Login},
-    {path: '/panel/', component: Panel},
+    {path: '/admin/panel/', component: Panel},
     {path: '/user/:uid/', component: UserInfo, props: true}
 ]
 

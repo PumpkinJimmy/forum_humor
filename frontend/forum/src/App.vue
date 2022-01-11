@@ -1,59 +1,62 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-      color="primary"
-      dark
-      hide-on-scroll>
+    <v-app-bar app color="primary" dark hide-on-scroll>
       <v-icon left>mdi-reddit</v-icon>
       <v-toolbar-title>Forum Humor</v-toolbar-title>
 
-      
-
       <v-spacer></v-spacer>
-      <router-link to="/post/">
-      <v-btn text>
-        <v-icon left>mdi-note</v-icon>
-        <span>帖子</span>
-      </v-btn>
-      </router-link>
 
       <router-link to="/user/2/">
-      <v-btn text>
-        <v-icon left>mdi-account-circle</v-icon>
-        <span>个人中心</span>
-      </v-btn>
+        <v-btn text>
+          <v-icon left>mdi-account-circle</v-icon>
+          <span>个人中心</span>
+        </v-btn>
       </router-link>
 
-      <v-btn text>
-        <v-icon left>mdi-account-group</v-icon>
-        <span>群组</span>
-      </v-btn>
-
-      <v-btn text>
-        <v-icon left>mdi-tag</v-icon>
-        <span>话题</span>
-      </v-btn>
+      <router-link to="/post/">
+        <v-btn text>
+          <v-icon left>mdi-note</v-icon>
+          <span>帖子</span>
+        </v-btn>
+      </router-link>
 
       <v-btn text>
         <v-icon left>mdi-lead-pencil</v-icon>
         <span>创作</span>
       </v-btn>
 
+      <v-btn text>
+        <v-icon left>mdi-account-group</v-icon>
+        <span>群组</span>
+      </v-btn>
+
+      <router-link to="/tags/">
+        <v-btn text>
+          <v-icon left>mdi-tag</v-icon>
+          <span>话题</span>
+        </v-btn>
+      </router-link>
+
+      <router-link to="/admin/panel">
+        <v-btn text>
+          <v-icon left>mdi-database</v-icon>
+          <span>管理</span>
+        </v-btn>
+      </router-link>
+
       <v-btn
         href="https://github.com/PumpkinJimmy/forum_humor"
         target="_blank"
         text
       >
-      <v-icon>mdi-open-in-new</v-icon>
+        <v-icon>mdi-open-in-new</v-icon>
         <span class="mr-2">View on Github</span>
-        
       </v-btn>
     </v-app-bar>
 
     <v-main class="main">
       <v-row justify="center">
-        <v-col cols="8">
+        <v-col cols="10">
           <router-view></router-view>
         </v-col>
         <!-- <v-col cols="2">
@@ -69,13 +72,12 @@
 export default {
   name: "App",
   data: () => ({
-    models: []
+    models: [],
   }),
   // components:{
   //   HotBoard
   // },
-  methods: {
-  },
+  methods: {},
 };
 </script>
 
@@ -95,7 +97,7 @@ div.links {
   flex-direction: row;
   border: 2px black solid;
 }
-.main{
+.main {
   background-color: rgb(218, 224, 230);
 }
 </style>
