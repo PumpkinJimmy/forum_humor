@@ -11,9 +11,23 @@
       
 
       <v-spacer></v-spacer>
+      <router-link to="/post/">
+      <v-btn text>
+        <v-icon left>mdi-note</v-icon>
+        <span>帖子</span>
+      </v-btn>
+      </router-link>
+
+      <router-link to="/user/2/">
       <v-btn text>
         <v-icon left>mdi-account-circle</v-icon>
         <span>个人中心</span>
+      </v-btn>
+      </router-link>
+
+      <v-btn text>
+        <v-icon left>mdi-account-group</v-icon>
+        <span>群组</span>
       </v-btn>
 
       <v-btn text>
@@ -22,8 +36,8 @@
       </v-btn>
 
       <v-btn text>
-        <v-icon left>mdi-magnify</v-icon>
-        <span>搜索</span>
+        <v-icon left>mdi-lead-pencil</v-icon>
+        <span>创作</span>
       </v-btn>
 
       <v-btn
@@ -31,8 +45,9 @@
         target="_blank"
         text
       >
+      <v-icon>mdi-open-in-new</v-icon>
         <span class="mr-2">View on Github</span>
-        <v-icon>mdi-open-in-new</v-icon>
+        
       </v-btn>
     </v-app-bar>
 
