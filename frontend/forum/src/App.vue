@@ -1,11 +1,30 @@
 <template>
   <v-app>
-    <v-app-bar app color="primary" dark>
-      <div class="d-flex align-center">
-        Forum Humor
-      </div>
+    <v-app-bar
+      app
+      color="primary"
+      dark
+      hide-on-scroll>
+      <v-icon left>mdi-reddit</v-icon>
+      <v-toolbar-title>Forum Humor</v-toolbar-title>
+
+      
 
       <v-spacer></v-spacer>
+      <v-btn text>
+        <v-icon left>mdi-account-circle</v-icon>
+        <span>个人中心</span>
+      </v-btn>
+
+      <v-btn text>
+        <v-icon left>mdi-tag</v-icon>
+        <span>话题</span>
+      </v-btn>
+
+      <v-btn text>
+        <v-icon left>mdi-magnify</v-icon>
+        <span>搜索</span>
+      </v-btn>
 
       <v-btn
         href="https://github.com/PumpkinJimmy/forum_humor"
@@ -17,23 +36,29 @@
       </v-btn>
     </v-app-bar>
 
-    <v-main>
+    <v-main class="main">
       <v-row justify="center">
-        <v-col cols="10">
+        <v-col cols="8">
           <router-view></router-view>
         </v-col>
+        <!-- <v-col cols="2">
+          <HotBoard></HotBoard>
+        </v-col> -->
       </v-row>
     </v-main>
   </v-app>
 </template>
 
 <script>
-
+// import HotBoard from './components/HotBoard'
 export default {
   name: "App",
   data: () => ({
     models: []
   }),
+  // components:{
+  //   HotBoard
+  // },
   methods: {
   },
 };
@@ -54,5 +79,8 @@ div.links {
   justify-content: space-around;
   flex-direction: row;
   border: 2px black solid;
+}
+.main{
+  background-color: rgb(218, 224, 230);
 }
 </style>

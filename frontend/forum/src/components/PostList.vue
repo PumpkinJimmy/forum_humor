@@ -1,20 +1,14 @@
 <template>
   <div class="post-list">
-    <v-row  v-for="(post, idx) in posts" :key="idx">
-      <v-col cols="2">
+    <v-row v-for="(post, idx) in posts" :key="idx">
+      <v-col cols="1">
         <v-avatar color="primary" size="56">
-            <v-icon dark>
-                mdi-account-circle
-            </v-icon>
+          <v-icon dark> mdi-account-circle </v-icon>
         </v-avatar>
         <!-- <div>{{post.poster_uid}}</div> -->
       </v-col>
-      <v-col cols="10">
-        <v-card
-         
-          transition="scroll-y-reverse-transition"
-          class="post"
-        >
+      <v-col cols="11">
+        <v-card transition="scroll-y-reverse-transition" class="post">
           <v-card-title>{{
             post.title ? post.title : "Untitled"
           }}</v-card-title>
@@ -25,15 +19,15 @@
           <v-card-text>
             <v-row class="post-info">
               <v-col cols="4">
-                <v-icon small>mdi-calendar</v-icon>Posted at
+                <v-icon small left>mdi-calendar</v-icon>Posted at
                 {{ post.post_time }}
               </v-col>
               <v-col cols="4">
-                <v-icon small>mdi-calendar</v-icon>Last modified at
+                <v-icon small left>mdi-calendar</v-icon>Last modified at
                 {{ post.last_modified_time }}
               </v-col>
               <v-col cols="4">
-                <v-icon small>mdi-fire</v-icon>Hot value: {{ post.hot_value }}
+                <v-icon small left>mdi-fire</v-icon>Hot value: {{ post.hot_value }}
               </v-col>
             </v-row>
             <v-row class="post-content" justify="center">
@@ -43,13 +37,17 @@
             </v-row>
           </v-card-text>
           <v-card-actions>
-              <v-row class="post-footer">
-                  <v-col cols=4><v-icon>mdi-tag</v-icon>Tag</v-col>
-                  <v-col cols=2><v-btn text>热度(10)</v-btn></v-col>
-                  <v-col cols=2><v-btn text>评论(5)</v-btn></v-col>
-                  <v-col cols=2><v-btn text>查看全文</v-btn></v-col>
-                  <v-col cols=2><v-btn text>喜欢</v-btn></v-col>
-              </v-row>
+            <v-row class="post-footer">
+              <v-col cols="4"><v-icon>mdi-tag</v-icon>Tag</v-col>
+              <v-col cols="2"><v-btn text>热度(10)</v-btn></v-col>
+              <v-col cols="2"><v-btn text>评论(5)</v-btn></v-col>
+              <v-col cols="2"><v-btn text>查看全文</v-btn></v-col>
+              <v-col cols="2">
+                <v-btn class="ma-2" text icon color="red lighten-2">
+                  <v-icon>mdi-thumb-up</v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
           </v-card-actions>
         </v-card>
       </v-col>
@@ -60,12 +58,12 @@
 .post {
   margin-bottom: 20px;
 }
-.post-info{
+.post-info {
   margin-bottom: 20px;
 }
-.post-footer *{
-    color: gray;
-    font-size: 0.9em;
+.post-footer * {
+  color: gray;
+  font-size: 0.9em;
 }
 .post-content {
   text-align: left;
