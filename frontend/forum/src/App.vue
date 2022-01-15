@@ -86,7 +86,7 @@ export default {
     bus.$on('login', function(val){
       self.user = val;
     });
-    axios.get('http://localhost:5000/api/v1/auth/login_status/')
+    axios.get('http://192.168.43.205:5000/api/v1/auth/login_status/')
       .then((resp)=>{
         if (resp.data.status == 'ok'){
           this.user = resp.data.username;
