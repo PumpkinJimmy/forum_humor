@@ -9,7 +9,7 @@
       <router-link :to="user_link">
         <v-btn text>
           <v-icon left>mdi-account-circle</v-icon>
-          <span>{{user ? user : '登录'}}</span>
+          <span>{{ user ? user : "登录" }}</span>
         </v-btn>
       </router-link>
 
@@ -20,10 +20,12 @@
         </v-btn>
       </router-link>
 
-      <v-btn text>
-        <v-icon left>mdi-lead-pencil</v-icon>
-        <span>创作</span>
-      </v-btn>
+      <router-link to="/post-edit/">
+        <v-btn text>
+          <v-icon left>mdi-lead-pencil</v-icon>
+          <span>创作</span>
+        </v-btn>
+      </router-link>
 
       <v-btn text>
         <v-icon left>mdi-account-group</v-icon>
@@ -37,7 +39,7 @@
         </v-btn>
       </router-link>
 
-      <router-link to="/admin/panel">
+      <router-link to="/admin/panel/">
         <v-btn text>
           <v-icon left>mdi-database</v-icon>
           <span>管理</span>
@@ -69,8 +71,8 @@
 
 <script>
 // import HotBoard from './components/HotBoard'
-import axios from 'axios';
-import bus from './bus.js';
+import axios from "axios";
+import bus from "./bus.js";
 export default {
   name: "App",
   data: () => ({
@@ -81,34 +83,32 @@ export default {
   // components:{
   //   HotBoard
   // },
-  mounted(){
+  mounted() {
     var self = this;
-    bus.$on('login', function(val){
+    bus.$on("login", function (val) {
       self.user = val;
     });
-    axios.get('http://192.168.43.205:5000/api/v1/auth/login_status/')
-      .then((resp)=>{
-        if (resp.data.status == 'ok'){
+    axios
+      .get("http://192.168.43.205:5000/api/v1/auth/login_status/")
+      .then((resp) => {
+        if (resp.data.status == "ok") {
           this.user = resp.data.username;
         }
-      })
+      });
   },
-  computed:{
-    user_link(){
-      if (this.user){
+  computed: {
+    user_link() {
+      if (this.user) {
         return `/user/${this.user}/`;
+      } else {
+        return "/login/";
       }
-      else{
-        return '/login/';
-      }
-    }
+    },
   },
   methods: {},
-  watch:{
-    user(){
-
-    }
-  }
+  watch: {
+    user() {},
+  },
 };
 </script>
 

@@ -7,10 +7,12 @@ import TagViewer from './components/TagViewer'
 import Login from './components/Login'
 import Panel from './components/Panel'
 import UserInfo from './components/UserInfo'
+import PostEdit from './components/PostEdit'
 
 const routes = [
     {path: '/', redirect:'/post/'},
     {path: '/post/', component: PostList},
+    {path: '/post-edit/', component: PostEdit},
     {path: '/emotion/', component: EmotionView},
     {path: '/userposts/', component: UserPostViewer},
     {path: '/tags/', component: TagViewer},
