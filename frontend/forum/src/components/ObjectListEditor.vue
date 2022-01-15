@@ -201,7 +201,7 @@ export default {
       axios.post(`http://192.168.43.205:5000/api/v1/object/${this.modelName}/`, obj)
         .then((response)=>{
           console.log(`Create status: ${response.data.status}`);
-          this.alertType = "success"
+          this.alertType = response.data.status
           this.alertMsg = `Create status: ${response.data.status}`
           this.alerting = true
           this.reset();
@@ -218,9 +218,18 @@ export default {
       axios.put(`http://192.168.43.205:5000${this.uris[this.editIdx]}`, obj)
           .then((response)=>{
             console.log(`Update status: ${response.data.status}`)
-            Object.assign(this.rows[this.editIdx], obj);
-            this.uris[this.editIdx] = response.data.uri;
-            
+            if (response.data.status == 'success'){
+              this.alertType = "success"
+              this.alertMsg = `Update status: ${response.data.status}`
+              this.alerting = true
+              Object.assign(this.rows[this.editIdx], obj);
+              this.uris[this.editIdx] = response.data.uri;
+            }
+            else{
+              this.alertType = "error"
+              this.alertMsg = `Update status: ${response.data.status}`
+              this.alerting = true
+            }
             this.reset();
           })
           .catch((err)=>{
