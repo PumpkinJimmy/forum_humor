@@ -72,22 +72,22 @@
 <script>
 // import HotBoard from './components/HotBoard'
 import axios from "axios";
-import bus from "./bus.js";
+// import bus from "./bus.js";
 export default {
   name: "App",
   data: () => ({
     models: [],
-    user: null,
   }),
 
   // components:{
   //   HotBoard
   // },
   mounted() {
-    var self = this;
-    bus.$on("login", function (val) {
-      self.user = val;
-    });
+    console.log(this.$store.state);
+    // var self = this;
+    // bus.$on("login", function (val) {
+    //   self.user = val;
+    // });
     axios
       .get("http://192.168.43.205:5000/api/v1/auth/login_status/")
       .then((resp) => {
@@ -97,6 +97,9 @@ export default {
       });
   },
   computed: {
+    user(){
+      return this.$store.state.user;
+    },
     user_link() {
       if (this.user) {
         return `/user/${this.user}/`;
@@ -106,9 +109,6 @@ export default {
     },
   },
   methods: {},
-  watch: {
-    user() {},
-  },
 };
 </script>
 

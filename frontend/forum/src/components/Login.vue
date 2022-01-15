@@ -20,7 +20,7 @@
 </template>
 <script>
 import axios from 'axios'
-import bus from '../bus.js'
+// import bus from '../bus.js'
 export default {
   name: "Login",
   data() {
@@ -32,7 +32,7 @@ export default {
   },
   mounted(){
       axios.defaults.withCredentials=true;
-      axios.get('http://192.168.43.205:5000/api/v1/auth/login_status/')
+      axios.get(`http://${this.$store.state.api}/api/v1/auth/login_status/`)
         .then((resp)=>{
             this.login_user = resp.data.username;
             console.log(resp.data);
@@ -40,16 +40,21 @@ export default {
   },
   methods:{
       login(){
-          axios.post('http://192.168.43.205:5000/api/v1/auth/login/', {
-              username: this.username,
-              password: this.password
+          this.$store.dispatch({
+            type: 'login',
+            username: this.username,
+            password: this.password,
           })
-          .then((resp)=>{
-              // this.$emit('FUCK', resp.data.username);
-              bus.$emit('login', resp.data.username);
-              this.login_user = resp.data.username;
-              this.$router.push({ path: '/'})
-          })
+          this.$router.push({path: '/'})
+          // axios.post('http://192.168.43.205:5000/api/v1/auth/login/', {
+          //     username: this.username,
+          //     password: this.password
+          // })
+          // .then((resp)=>{
+          //     bus.$emit('login', resp.data.username);
+          //     this.login_user = resp.data.username;
+          //     this.$router.push({ path: '/'})
+          // })
       }
   }
 };

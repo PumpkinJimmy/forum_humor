@@ -137,7 +137,7 @@ def create_app():
         '''
         new_obj = model(request.get_json())
         try:
-            print(f"Try insert tuple {new_obj}")
+            print(f"Create <{model.__tablename__}> with {new_obj}")
             session = DBSession(engine)
             session.insert(new_obj)
             session.commit()
@@ -157,9 +157,9 @@ def create_app():
         '''
         req: Object
         '''
+        print(f'Update object <{model.__tablename__}:{pk} with data {request.get_json()}')
         session = DBSession(engine)
         new_obj = model(request.get_json())
-        print(request.get_json())
         try:
             session.update(new_obj, pk=pk)
             session.commit()
@@ -177,6 +177,7 @@ def create_app():
     @app.route('/api/v1/object/<model:model>/<key:pk>/', methods=['DELETE'])
     def delete_tag(model, pk):
         if request.method == 'DELETE':
+            print(f'Delete object <{model.__tablename__}:{pk}>')
             session = DBSession(engine)
             session.delete(model, pk=pk)
             return {
@@ -282,11 +283,24 @@ def create_app():
     @app.route('/api/v1/auth/login/', methods=['POST'])
     def login():
         data = request.get_json()
-        session['username'] = data['username']
-        return {
-            'status': 'ok',
-            'username': session['username']
-        }
+        print(f"Login:{data}, {data.keys()}")
+        dbsession = DBSession(engine)
+        ForumUser = models.ForumUser
+        res = dbsession.select(ForumUser, condition=f"uname='{data['username']}' and password='{data['password']}'").all()
+        if (res):
+            print(f'Found user:{res[0]}')
+            session['username'] = data['username']
+            return {
+                'status': 'ok',
+                'username': session['username']
+            }
+        else:
+            print(f"No such auth pair:<{data['username']},{data['password']}>")
+            return {
+                'status': 'fail',
+                'message': 'no such user or password wrong'
+            }
+        
 
     # @app.route('/logout')
     # def logout():

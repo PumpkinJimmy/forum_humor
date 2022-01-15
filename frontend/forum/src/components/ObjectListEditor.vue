@@ -109,12 +109,13 @@ export default {
     };
   },
   mounted() {
+    console.log(this.$store.state.api);
     this.renderEditor();
   },
   methods: {
     getModelInfo(){
       axios
-        .get(`http://192.168.43.205:5000/api/v1/model/${this.modelName}/`)
+        .get(`http://${this.$store.state.api}/api/v1/model/${this.modelName}/`)
         .then((response) => {
           this.model = response.data.model_info;
           this.headers = [];
@@ -136,9 +137,9 @@ export default {
       if (this.serverLength == 0) return;
       var api;
       if (limit == undefined) {
-        api = `http://192.168.43.205:5000/api/v1/object/${this.modelName}/?`;
+        api = `http://${this.$store.state.api}/api/v1/object/${this.modelName}/?`;
       } else {
-        api = `http://192.168.43.205:5000/api/v1/object/${this.modelName}/?offset=${offset}&limit=${limit}`;
+        api = `http://${this.$store.state.api}/api/v1/object/${this.modelName}/?offset=${offset}&limit=${limit}`;
       }
       if (orderby){
         api += `&orderby=${orderby}`
@@ -155,7 +156,7 @@ export default {
       this.loading = true;
       axios
         .get(
-          `http://192.168.43.205:5000/api/v1/object/${this.modelName}/?count_only=true`
+          `http://${this.$store.state.api}/api/v1/object/${this.modelName}/?count_only=true`
         )
         .then((response) => {
           this.serverLength = response.data.count;
@@ -198,7 +199,7 @@ export default {
       this.editItem = {};
     },
     create(obj){
-      axios.post(`http://192.168.43.205:5000/api/v1/object/${this.modelName}/`, obj)
+      axios.post(`http://${this.$store.state.api}/api/v1/object/${this.modelName}/`, obj)
         .then((response)=>{
           console.log(`Create status: ${response.data.status}`);
           if (response.data.status == 'ok'){
@@ -223,7 +224,7 @@ export default {
         })
     },
     update(obj){
-      axios.put(`http://192.168.43.205:5000${this.uris[this.editIdx]}`, obj)
+      axios.put(`http://${this.$store.state.api}${this.uris[this.editIdx]}`, obj)
           .then((response)=>{
             console.log(`Update status: ${response.data.status}`)
             if (response.data.status == 'ok'){
@@ -249,7 +250,7 @@ export default {
           })
     },
     del(){
-      axios.delete(`http://192.168.43.205:5000${this.uris[this.editIdx]}`)
+      axios.delete(`http://${this.$store.state.api}${this.uris[this.editIdx]}`)
         .then((response)=>{
             console.log(`Delete status: ${response.data.status}`)
             this.alertType = "success"

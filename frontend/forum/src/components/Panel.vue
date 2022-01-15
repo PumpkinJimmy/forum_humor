@@ -38,7 +38,7 @@ export default {
     ObjectListEditor,
   },
   mounted(){
-      axios.get('http://192.168.43.205:5000/api/v1/model')
+      axios.get(`http://${this.$store.state.api}/api/v1/model`)
       .then((response)=>{
         this.models = response.data.models
       })
