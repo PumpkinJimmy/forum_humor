@@ -69,6 +69,7 @@ Dependencies:
   - Vue Router
   - Vuetify
   - axios
+  - moment.js
 
 剩余目标特性:
 - Database

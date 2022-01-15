@@ -44,7 +44,9 @@ export default {
               password: this.password
           })
           .then((resp)=>{
+              console.log(this.$refs);
               this.login_user = resp.data.username;
+              this.$router.push({ path: '/'})
           })
       }
   }

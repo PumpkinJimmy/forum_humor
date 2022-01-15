@@ -35,7 +35,7 @@
   - 可替换的数据库Backend
   - 基于Python元类模式定义接口`ModelMetaClass`
   - 对接存储模型和业务语义的`Field`接口
-  - 基于JSON的查询语法
+  - 类JSON查询语法
   - 连接池支持
   - 基于Python析构函数的RAII会话实现
 

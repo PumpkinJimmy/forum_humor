@@ -6,10 +6,10 @@
 
       <v-spacer></v-spacer>
 
-      <router-link to="/user/2/">
+      <router-link :to="user_link">
         <v-btn text>
           <v-icon left>mdi-account-circle</v-icon>
-          <span>个人中心</span>
+          <span>{{user ? user : '登录'}}</span>
         </v-btn>
       </router-link>
 
@@ -69,14 +69,35 @@
 
 <script>
 // import HotBoard from './components/HotBoard'
+import axios from 'axios';
 export default {
   name: "App",
+  ref: 'app',
   data: () => ({
     models: [],
+    user: null,
   }),
   // components:{
   //   HotBoard
   // },
+  mounted(){
+    axios.get('http://localhost:5000/api/v1/auth/login_status/')
+      .then((resp)=>{
+        if (resp.data.status == 'ok'){
+          this.user = resp.data.username;
+        }
+      })
+  },
+  computed:{
+    user_link(){
+      if (this.user){
+        return '/user/2/';
+      }
+      else{
+        return '/login/';
+      }
+    }
+  },
   methods: {},
 };
 </script>
