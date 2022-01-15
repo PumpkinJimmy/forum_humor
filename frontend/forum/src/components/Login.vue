@@ -20,6 +20,7 @@
 </template>
 <script>
 import axios from 'axios'
+import bus from '../bus.js'
 export default {
   name: "Login",
   data() {
@@ -31,7 +32,7 @@ export default {
   },
   mounted(){
       axios.defaults.withCredentials=true;
-      axios.get('http://127.0.0.1:5000/api/v1/auth/login_status/')
+      axios.get('http://192.168.43.205:5000/api/v1/auth/login_status/')
         .then((resp)=>{
             this.login_user = resp.data.username;
             console.log(resp.data);
@@ -39,12 +40,13 @@ export default {
   },
   methods:{
       login(){
-          axios.post('http://127.0.0.1:5000/api/v1/auth/login/', {
+          axios.post('http://192.168.43.205:5000/api/v1/auth/login/', {
               username: this.username,
               password: this.password
           })
           .then((resp)=>{
-              console.log(this.$refs);
+              // this.$emit('FUCK', resp.data.username);
+              bus.$emit('login', resp.data.username);
               this.login_user = resp.data.username;
               this.$router.push({ path: '/'})
           })

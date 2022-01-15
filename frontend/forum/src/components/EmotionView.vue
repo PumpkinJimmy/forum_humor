@@ -14,7 +14,7 @@ export default {
         }
     },
     mounted(){
-        axios.get('http://127.0.0.1:5000/api/v1/ml/infer_all/')
+        axios.get('http://192.168.43.205/api/v1/ml/infer_all/')
             .then((resp)=>{
                 
                 var rows = resp.data.res;

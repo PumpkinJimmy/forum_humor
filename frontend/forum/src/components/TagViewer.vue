@@ -40,7 +40,7 @@ export default {
   methods: {
     query_tags() {
       axios
-        .get("http://127.0.0.1:5000/api/v1/query/tag_access/")
+        .get("http://192.168.43.205:5000/api/v1/query/tag_access/")
         .then((resp) => {
           this.tags = resp.data.res;
         });
@@ -49,7 +49,7 @@ export default {
       const uid = 2;
       axios
         .get(
-          `http://127.0.0.1:5000/api/v1/log/tag_access/?uid=${uid}&tname=${tname}`
+          `http://192.168.43.205:5000/api/v1/log/tag_access/?uid=${uid}&tname=${tname}`
         )
         .then((resp) => {
           console.log(resp.data);

@@ -53,7 +53,7 @@ export default {
   methods: {
     requestUserInfo() {
       axios
-        .get(`http://127.0.0.1:5000/api/v1/object/user/${this.uid}/`)
+        .get(`http://192.168.43.205:5000/api/v1/object/user/${this.uid}/`)
         .then((resp) => {
           this.user = resp.data.obj;
         });

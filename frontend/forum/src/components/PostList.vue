@@ -86,7 +86,7 @@ export default {
   mounted() {
     axios
       .get(
-        "http://127.0.0.1:5000/api/v1/object/post/?limit=10&orderby=hot_value&desc=true"
+        "http://192.168.43.205:5000/api/v1/object/post/?limit=10&orderby=hot_value&desc=true"
       )
       .then((response) => {
         this.posts = response.data.objs;
