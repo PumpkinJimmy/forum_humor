@@ -1,5 +1,6 @@
+from xml.dom.domreg import registered
 from flask import Flask, request, g
-from flask import session
+from flask import session, abort
 import flask
 from flask.helpers import url_for
 from flask_cors import CORS
@@ -34,6 +35,7 @@ registered_models = {
     'tag_post': models.TagPost,
     'tag_user': models.TagUser,
     'tag_log': models.TagLog,
+    # 'null': models.Model,
 }
 
 def create_app():
@@ -55,6 +57,8 @@ def create_app():
     class ModelConverter(BaseConverter):
         registered_models = registered_models
         def to_python(self, model_name):
+            if model_name not in registered_models:
+                abort(404)
             return self.registered_models[model_name]
         
         def to_url(self, model):
@@ -288,11 +292,16 @@ def create_app():
         ForumUser = models.ForumUser
         res = dbsession.select(ForumUser, condition=f"uname='{data['username']}' and password='{data['password']}'").all()
         if (res):
-            print(f'Found user:{res[0]}')
-            session['username'] = data['username']
+            print(f'Found user:{res[0].get_data()}')
+            user = res[0].get_data()
+            session['uid'] = user['uid']
+            session['username'] = user['uname']
             return {
                 'status': 'ok',
-                'username': session['username']
+                'user': {
+                    'uid': session['uid'],
+                    'username': session['username']
+                }
             }
         else:
             print(f"No such auth pair:<{data['username']},{data['password']}>")

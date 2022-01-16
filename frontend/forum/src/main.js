@@ -15,7 +15,8 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   state: {
     user: null,
-    api: '172.26.13.146:5000'
+    api: 'localhost:5000'
+    // api: '172.26.13.146:5000'
   },
   mutations: {
     setUser(state, user){
@@ -29,7 +30,7 @@ const store = new Vuex.Store({
               password: password,
           })
           .then((resp)=>{
-              context.commit('setUser', resp.data.username);
+              context.commit('setUser', resp.data.user);
               console.log(context.state.user);
           })
     }

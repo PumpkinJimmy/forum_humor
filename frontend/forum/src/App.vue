@@ -9,7 +9,7 @@
       <router-link :to="user_link">
         <v-btn text>
           <v-icon left>mdi-account-circle</v-icon>
-          <span>{{ user ? user : "登录" }}</span>
+          <span>{{ user ? user.username : "登录" }}</span>
         </v-btn>
       </router-link>
 
@@ -89,7 +89,7 @@ export default {
     //   self.user = val;
     // });
     axios
-      .get("http://192.168.43.205:5000/api/v1/auth/login_status/")
+      .get(`http://${this.$store.state.api}/api/v1/auth/login_status/`)
       .then((resp) => {
         if (resp.data.status == "ok") {
           this.user = resp.data.username;
@@ -102,7 +102,7 @@ export default {
     },
     user_link() {
       if (this.user) {
-        return `/user/${this.user}/`;
+        return `/user/${this.user.uid}/`;
       } else {
         return "/login/";
       }
