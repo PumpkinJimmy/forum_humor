@@ -91,9 +91,7 @@ export default {
     axios
       .get(`http://${this.$store.state.api}/api/v1/auth/login_status/`)
       .then((resp) => {
-        if (resp.data.status == "ok") {
-          this.user = resp.data.username;
-        }
+        this.$store.commit('setUser', resp.data.user);
       });
   },
   computed: {

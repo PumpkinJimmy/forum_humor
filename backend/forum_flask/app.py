@@ -278,7 +278,11 @@ def create_app():
         if 'username' in session:
             return {
                 'status': 'ok',
-                'username': session['username']
+                'username': session['username'],
+                'user':{
+                    'username': session['username'],
+                    'uid': session['uid']
+                }
             }
         return {
             'status': 'no login'
