@@ -20,7 +20,6 @@
               <v-tab href="#tab-groups">群组</v-tab>
               <v-tab href="#tab-tags">关注话题</v-tab>
               <v-tab href="#tab-emotion">情绪分析</v-tab>
-              <v-tab href="#tab-hot">热度分析</v-tab>
             </v-tabs>
           </v-row>
         </v-card>

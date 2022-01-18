@@ -19,6 +19,7 @@ from ml.classification import EmotionClassifier
 from json_encoder import CustomJSONEncoder
 import datetime
 import os
+import pandas as pd
 
 engine = Psycopg2Engine(**settings.database)
 
@@ -270,6 +271,23 @@ def create_app():
         return {
             'status': 'ok'
         }
+    
+    @app.route('/api/v1/hot/tag_hot/<string:tname>/')
+    def tag_hot(tname):
+        try:
+            session = DBSession(engine)
+            conn = session.get_raw_conn()
+            df = pd.read_sql(f"select * from tag_log where tname='{tname}'", con=conn)
+            df.set_index('access_time',inplace=True)
+            win_size = request.args.get('winSize', '1D')
+            cnt = df.uid.rolling(win_size).count().to_dict()
+            cnt = list(map(lambda p: {'timestamp': p[0].to_pydatetime().timestamp(), 'count': p[1]}, cnt.items()))
+            return {
+                'status': 'ok',
+                'hot_data': cnt
+            }
+        finally:
+            del session
     
     
 

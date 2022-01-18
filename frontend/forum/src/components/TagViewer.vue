@@ -3,16 +3,27 @@
     <v-col cols="8">
       <v-card class="tag-viewer">
         <v-card-title class="text-h3">话题一览</v-card-title>
-        <v-chip
-          v-for="(tag, idx) of tags"
-          :key="idx"
-          @click="tagAccess(tag[0])"
-        >
+        <v-row>
+          <v-col cols="3">
+            标签
+          </v-col>
+          <v-col cols="9">
+            热度
+          </v-col>
+        </v-row>
+        <v-row v-for="(tag, idx) of tags" :key="idx" @click="tagAccess(tag[0])">
+          <v-col cols="3">
+        <v-chip>
           #{{ tag[0] }}
           <v-avatar right class="green">
             {{ tag[1] }}
           </v-avatar>
         </v-chip>
+          </v-col>
+          <v-col cols="9">
+            haha
+          </v-col>
+        </v-row>
       </v-card>
     </v-col>
   </v-row>
