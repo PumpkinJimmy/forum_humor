@@ -209,13 +209,13 @@ def create_app():
                 'field1': 'uid',
                 'field2': 'poster_uid'
             },
-            condition=ForumUser.uid==uid
+            condition=f'{ForumUser.uid==uid} and post.content is not null'
             )
         rows, fields = qs.all_raw()
         if not rows:
             return {'status': 'no available text'}
         content_idx = fields.index('content')
-        res = [classifier.infer_emotion(row[content_idx]) for row in rows]
+        res = [classifier.infer_emotion(row[content_idx]) for row in rows if row[content_idx]]
         return {
             'status': 'ok',
             'res': res
