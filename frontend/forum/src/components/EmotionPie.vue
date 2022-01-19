@@ -42,30 +42,43 @@ export default {
   data(){
     return {
       legend: [],
+      summary: {},
       color: d3.schemeCategory10,
     }
   },
   mounted() {
-    this.drawPie();
+    this.calcSummary();
+    this.drawPie(this.summary);
   },
   watch: {
     emotion() {
-      this.drawPie();
+      this.calcSummary();
+      this.drawPie(this.summary);
     },
   },
   methods: {
-    drawPie() {
-      var row = this.emotion;
-      console.log(this.emotion);
-      this.legend = Object.keys(this.emotion);
-      var s = 0;
-      for (var i in row) {
-        row[i] = Math.exp(row[i]);
-        s += row[i];
+    calcSummary(){
+      
+      if (!this.emotion) return;
+      for (var k in this.emotion[0]){
+        this.summary[k] = 0
       }
-      for (i in row) {
-        row[i] /= s;
+      for (var row of this.emotion){
+        var s = 0;
+        for (var i in row) {
+          row[i] = Math.exp(row[i]);
+          s += row[i];
+        }
+        for (i in row) {
+          this.summary[i] += row[i] / s;
+        }
       }
+      console.log(this.summary)
+    },
+    drawPie(row) {
+      this.legend = Object.keys(row);
+      // var s = 0;
+      
       console.log(row);
       var pie = d3.pie();
       var color = d3.schemeCategory10;

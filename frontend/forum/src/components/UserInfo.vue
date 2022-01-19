@@ -56,7 +56,7 @@
                         </v-row>
                         <v-row class="post-content" justify="center">
                           <v-col cols="10">
-                            {{ post.content }}
+                            {{ post.content ? post.content : 'No content' }}
                           </v-col>
                         </v-row>
                       </v-card-text>
@@ -87,7 +87,7 @@
                   <emotion-pie :emotion="emotion"></emotion-pie>
                 </v-tab-item>
                 <v-tab-item value="tab-hot">
-                  <div>hehe</div>
+                  <hot-plot></hot-plot>
                 </v-tab-item>
               </v-tabs-items>
             </v-col>
@@ -107,11 +107,17 @@
 .post{
   margin-bottom: 5vh;
 }
+.post-content{
+  color:darkgray;
+  padding-top: 5vh;
+  padding-bottom: 5vh;
+}
 </style>
 
 <script>
 import axios from "axios";
 import EmotionPie from './EmotionPie.vue';
+import HotPlot from './HotPlot.vue';
 export default {
   name: "UserInfo",
   props: ["uid"],
@@ -123,7 +129,7 @@ export default {
       emotion: {},
     };
   },
-  components:{ EmotionPie},
+  components:{ EmotionPie, HotPlot},
   methods: {
     requestUserInfo() {
       axios
@@ -140,7 +146,7 @@ export default {
         )
         .then((resp)=>{
           alert(resp.data);
-          this.emotion = resp.data.res[0];
+          this.emotion = resp.data.res;
         })
       // axios
       //   .get(`http://${this.$store.state.api}/api/v1/object/user/${this.user.uid}/`)
