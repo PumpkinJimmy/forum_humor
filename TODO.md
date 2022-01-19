@@ -1,7 +1,3 @@
-- 前后端组件抽象
-- windows上装PostgreSQL方便测试
-- simple ORM
-- 接口文档
-- 返回`headers`，显示表格的格式
-- 返回`field_type`（仅限Form的，View不用） 用于前端验证和选择表单组件
-- 返回`uri`
+情感标签组件。
+话题点击曲线。
+群组面板。

@@ -1,40 +1,25 @@
-# 后端接口文档（待完善）
-- 查询对象列表
+对象元数据：
+- `/api/v1/model/`
+- `/api/v1/model/<model:model>/`
 
-- 查询对象
-  
-  URI: `/api/v1/<obj>/<primary_key...>`
+对象CRUD：
+- `/api/v1/object/<model:model>/`
+- `/api/v1/object/<model:model>/<key:pk>/`
 
-  Method: `GET`
+登录服务：
+- `/api/v1/auth/login/`
+- `/api/v1/auth/login_status/`
 
-  Response: 
-  
-  | key name | type   | comment                             |
-  | -------- | ------ | ----------------------------------- |
-  | status   | String |                                     |
-  | object   | Object | Structure depends on Specified obj. |
+面向具体业务的查询：
+- `/api/v1/query/user_posts/<key:pk>/`
+- `/api/v1/query/tag_access/<string:tname>/`
 
-- 增加对象
-  
-  URI: `/api/v1/<obj>`
+情感推断服务：
+- `/api/v1/ml/infer_all/`
+- `/api/v1/ml/infer_user/<string:uid>/`
 
-  Method: `POST`
+点击记录服务：
+- `/api/v1/log/tag_access//<string:tname>`
 
-  Request:
-
-    | key name | type   | comment          |
-    | -------- | ------ | ---------------- |
-    | status   | String |                  |
-    | uri      | String | New object's uri |
-
-- 修改对象
-
-
-- 删除对象
-  
-  URI: `/api/v1/<obj>/<primary_key...>`
-
-  Method: `DELETE`
-
-  Response:
-
+话题热度统计服务：
+- `/api/v1/hot/tag_hot/<string:tname>/`

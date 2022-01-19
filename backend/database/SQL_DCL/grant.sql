@@ -1,0 +1,15 @@
+grant select, delete, update, insert on message to forum_user;
+grant select, delete, update, insert on post to forum_user;
+grant select, delete, update, insert on forum_user to forum_user;
+grant all on comment to forum_backend;
+grant all on comment_cid_seq to forum_backend;
+grant all on forum_group to forum_backend;
+grant all on forum_group_gid_seq to forum_backend;
+grant all on group_member to forum_backend;
+grant all on message to forum_backend;
+grant all on message_mid_seq to forum_backend;
+grant all on post to forum_backend;
+grant all on post_pid_seq to forum_backend;
+grant all on tag to forum_backend;
+grant all on tag_post to forum_backend;
+grant all on tag_user to forum_backend;

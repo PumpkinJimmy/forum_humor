@@ -1,20 +1,108 @@
 <template>
-  <div id="app">
-    <div class="links">
-      <router-link to="/tag">Tags</router-link>
-      <router-link to="/forum_user">ForumUsers</router-link>
-    </div>
-    
-    <router-view></router-view>
-  </div>
+  <v-app>
+    <v-app-bar app color="primary" dark hide-on-scroll>
+      <v-icon left>mdi-reddit</v-icon>
+      <v-toolbar-title>Forum Humor</v-toolbar-title>
+
+      <v-spacer></v-spacer>
+
+      <router-link :to="user_link">
+        <v-btn text>
+          <v-icon left>mdi-account-circle</v-icon>
+          <span>{{ user ? user.username : "登录" }}</span>
+        </v-btn>
+      </router-link>
+
+      <router-link to="/post/">
+        <v-btn text>
+          <v-icon left>mdi-note</v-icon>
+          <span>帖子</span>
+        </v-btn>
+      </router-link>
+
+      <router-link to="/post-edit/">
+        <v-btn text>
+          <v-icon left>mdi-lead-pencil</v-icon>
+          <span>创作</span>
+        </v-btn>
+      </router-link>
+
+      <v-btn text>
+        <v-icon left>mdi-account-group</v-icon>
+        <span>群组</span>
+      </v-btn>
+
+      <router-link to="/tags/">
+        <v-btn text>
+          <v-icon left>mdi-tag</v-icon>
+          <span>话题</span>
+        </v-btn>
+      </router-link>
+
+      <router-link to="/admin/panel/">
+        <v-btn text>
+          <v-icon left>mdi-database</v-icon>
+          <span>管理</span>
+        </v-btn>
+      </router-link>
+
+      <v-btn
+        href="https://github.com/PumpkinJimmy/forum_humor"
+        target="_blank"
+        text
+      >
+        <v-icon>mdi-open-in-new</v-icon>
+        <span class="mr-2">View on Github</span>
+      </v-btn>
+    </v-app-bar>
+
+    <v-main class="main">
+      <v-row justify="center">
+        <v-col cols="10">
+          <router-view></router-view>
+        </v-col>
+        <!-- <v-col cols="2">
+          <HotBoard></HotBoard>
+        </v-col> -->
+      </v-row>
+    </v-main>
+  </v-app>
 </template>
 
 <script>
-
+// import HotBoard from './components/HotBoard'
+import axios from "axios";
+// import bus from "./bus.js";
 export default {
-  name: 'App',
+  name: "App",
+  data: () => ({
+    models: [],
+  }),
 
-}
+  // components:{
+  //   HotBoard
+  // },
+  mounted() {
+    axios
+      .get(`http://${this.$store.state.api}/api/v1/auth/login_status/`)
+      .then((resp) => {
+        this.$store.commit('setUser', resp.data.user);
+      });
+  },
+  computed: {
+    user(){
+      return this.$store.state.user;
+    },
+    user_link() {
+      if (this.user) {
+        return `/user/${this.user.uid}/`;
+      } else {
+        return "/login/";
+      }
+    },
+  },
+  methods: {},
+};
 </script>
 
 <style>
@@ -32,5 +120,8 @@ div.links {
   justify-content: space-around;
   flex-direction: row;
   border: 2px black solid;
+}
+.main {
+  background-color: rgb(218, 224, 230);
 }
 </style>

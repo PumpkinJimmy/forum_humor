@@ -6,8 +6,16 @@ scratch
 # JS
 node_modules/
 *.ico
-*.png
+assets/
+
 
 # python
 *.pyc
 *.pyo
+__pycache__
+
+# ER
+!ER*.png
+
+# Security
+settings.py
