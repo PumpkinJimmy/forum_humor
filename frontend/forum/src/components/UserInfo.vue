@@ -10,7 +10,7 @@
               </v-avatar>
             </v-col>
             <v-col cols="3">
-              <div>{{ user.uname }}<v-chip>Unknown</v-chip></div>
+              <div>{{ user.uname }}<emotion-label></emotion-label></div>
               <div>{{ user.email }}</div>
             </v-col>
           </v-row>
@@ -118,6 +118,7 @@
 import axios from "axios";
 import EmotionPie from './EmotionPie.vue';
 import HotPlot from './HotPlot.vue';
+import EmotionLabel from './EmotionLabel.vue';
 export default {
   name: "UserInfo",
   props: ["uid"],
@@ -129,7 +130,7 @@ export default {
       emotion: {},
     };
   },
-  components:{ EmotionPie, HotPlot},
+  components:{ EmotionPie, HotPlot, EmotionLabel},
   methods: {
     requestUserInfo() {
       axios
