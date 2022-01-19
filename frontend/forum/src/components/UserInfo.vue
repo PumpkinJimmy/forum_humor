@@ -10,7 +10,8 @@
               </v-avatar>
             </v-col>
             <v-col cols="3">
-              <div>{{ user.uname }}<emotion-label></emotion-label></div>
+              <div>{{ user.username }}</div>
+              <emotion-label></emotion-label>
               <div>{{ user.email }}</div>
             </v-col>
           </v-row>
@@ -36,7 +37,7 @@
                       class="post elevation-1"
                     >
                       <v-card-title>{{
-                        post.title ? post.title : "Untitled"
+                        post_title(idx) ? post_title(idx) : "Untitled"
                       }}</v-card-title>
                       <v-card-text>
                         <v-row class="post-info">
@@ -56,7 +57,7 @@
                         </v-row>
                         <v-row class="post-content" justify="center">
                           <v-col cols="10">
-                            {{ post.content ? post.content : 'No content' }}
+                            {{ post_content(idx) ? post_content(idx) : 'No content' }}
                           </v-col>
                         </v-row>
                       </v-card-text>
@@ -132,7 +133,16 @@ export default {
   },
   components:{ EmotionPie, HotPlot, EmotionLabel},
   methods: {
+    post_content(idx){
+      var content_idx = this.headers.indexOf('content')
+      return this.posts[idx][content_idx]
+    },
+    post_title(idx){
+      var title_idx = this.headers.indexOf('title')
+      return this.posts[idx][title_idx]
+    },
     requestUserInfo() {
+      console.log(this.user);
       axios
         .get(
           `http://${this.$store.state.api}/api/v1/query/user_posts/${this.user.uid}/`
@@ -146,7 +156,6 @@ export default {
           `http://${this.$store.state.api}/api/v1/ml/infer_user/${this.user.uid}/`
         )
         .then((resp)=>{
-          alert(resp.data);
           this.emotion = resp.data.res;
         })
       // axios

@@ -6,6 +6,8 @@
           <v-avatar color="primary" size="56">
             <v-icon dark> mdi-account-circle </v-icon>
           </v-avatar>
+          <div> {{post.pid}}
+          </div>
           <!-- <div>{{post.poster_uid}}</div> -->
         </v-col>
         <v-col cols="11">
@@ -21,11 +23,11 @@
               <v-row class="post-info">
                 <v-col cols="4">
                   <v-icon small left>mdi-calendar</v-icon>Posted at
-                  {{ post.post_time }}
+                  {{ toFormattedDate(post.post_time) }}
                 </v-col>
                 <v-col cols="4">
                   <v-icon small left>mdi-calendar</v-icon>Last modified at
-                  {{ post.last_modified_time }}
+                  {{ toFormattedDate(post.last_modified_time) }}
                 </v-col>
                 <v-col cols="4">
                   <v-icon small left>mdi-fire</v-icon>Hot value:
@@ -75,6 +77,7 @@
 </style>
 <script>
 import axios from "axios";
+import moment from 'moment';
 export default {
   name: "PostList",
   data() {
@@ -86,12 +89,17 @@ export default {
   mounted() {
     axios
       .get(
-        `http://${this.$store.state.api}/api/v1/object/post/?limit=10&orderby=hot_value&desc=true`
+        `http://${this.$store.state.api}/api/v1/object/post/?limit=10&orderby=post_time&desc=true&show=true`
       )
       .then((response) => {
         this.posts = response.data.objs;
         this.uris = response.data.uris;
       });
   },
+  methods: {
+    toFormattedDate(timestamp){
+      return moment(timestamp*1000).format('YYYY-MM-DD');
+    },
+  }
 };
 </script>

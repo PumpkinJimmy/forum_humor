@@ -110,8 +110,12 @@ def create_app():
         limit = request.args.get('limit')
         orderby = request.args.get('orderby')
         desc = True if request.args.get('desc') == 'true' else False
-        
-        res = session.select(model, limit=limit, offset=offset, orderby=orderby, orderby_desc=desc)
+        print(request.args.get('show'))
+        if not request.args.get('show'):
+            res = session.select(model, limit=limit, offset=offset, orderby=orderby, orderby_desc=desc)
+        else:
+            res =  session.select(model, condition='content is not null and post_time is not null',
+            limit=limit, offset=offset, orderby=orderby, orderby_desc=desc)
 
         uris = [
             url_for('get_object', model=model, pk=tuple(obj.get_key().values())) 
@@ -217,6 +221,7 @@ def create_app():
             return {'status': 'no available text'}
         content_idx = fields.index('content')
         res = [classifier.infer_emotion(row[content_idx]) for row in rows if row[content_idx]]
+        print(rows[0][content_idx], res)
         return {
             'status': 'ok',
             'res': res
@@ -331,7 +336,33 @@ def create_app():
                 'status': 'fail',
                 'message': 'no such user or password wrong'
             }
+    
+    @app.route('/api/v1/post/add/', methods=['POST'])
+    def addPost():
+        data = request.get_json()
+        print(data)
+        tags = data['tags']
+        del data['tags']
+        obj = models.Post(data)
         
+        print(obj)
+        session = DBSession(engine)
+        conn = session.get_raw_conn()
+        curs = conn.cursor()
+        curs.execute('insert into post values (DEFAULT,%s,%s,%s,to_timestamp(%s),to_timestamp(%s),%s)',
+            (data['hot_value'],
+            data['title'],
+            data['content'],
+            int(data['post_time']),
+            int(data['last_modified_time']),
+            data['poster_uid']
+            )
+        )
+        conn.commit()
+        engine.putconn(conn)
+        return {
+            'status': 'ok'
+        }
 
     # @app.route('/logout')
     # def logout():

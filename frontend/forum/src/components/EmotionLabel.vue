@@ -47,6 +47,7 @@ export default {
   },
   computed: {
       emotion(){
+        // return 'joy';
         for (var em in this.summary){
             if (this.summary[em] > 0.3){
                 return em;

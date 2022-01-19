@@ -83,11 +83,6 @@ export default {
   //   HotBoard
   // },
   mounted() {
-    console.log(this.$store.state);
-    // var self = this;
-    // bus.$on("login", function (val) {
-    //   self.user = val;
-    // });
     axios
       .get(`http://${this.$store.state.api}/api/v1/auth/login_status/`)
       .then((resp) => {

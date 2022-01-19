@@ -85,10 +85,10 @@ export default {
       var dat = Object.values(row);
 
       var piedata = pie(dat);
-      var arc = d3.arc().innerRadius(0).outerRadius(40);
+      var arc = d3.arc().innerRadius(0).outerRadius(30);
 
       var plot = d3.select("#emotion-plot");
-      plot.attr("viewBox", "-100 -100 200 200");
+      plot.attr("viewBox", "-50 -50 200 200");
 
       var arcs = plot.selectAll("g").data(piedata).enter();
       arcs
